@@ -16,7 +16,7 @@ AAgent::AAgent()
 void AAgent::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -30,6 +30,5 @@ void AAgent::Tick( float DeltaTime )
 void AAgent::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 {
 	Super::SetupPlayerInputComponent(InputComponent);
-
+	
 }
-

@@ -13,23 +13,24 @@ class FINAL_PROJECT_API AAgentController : public AAIController
 {
 	GENERATED_BODY()
 
-	// transient property - should not be saved
-	UPROPERTY(transient)
-		UBlackboardComponent* m_Blackboard;
-	
-	UPROPERTY(transient)
-		UBehaviorTreeComponent* m_BehvaiourTree;
-	
-	virtual void Possess(class APawn* InPawn);
-
-	// Patrol the patrol path
-	UFUNCTION(BlueprintCallable, Category = Behaviour)
-		void Patrol();
-
 public:
 	AAgentController();
 
+	UPROPERTY(transient) // transient property - should not be saved
+		UBlackboardComponent* m_BlackboardComp;
+
+	/** Custom BehaviourTreeComponent */
+	UPROPERTY(transient)
+		UBehaviorTreeComponent* m_BehvaiourTreeComp;
+
+	virtual void Possess(class APawn* InPawn);	// Override function
+
+	/** Sets a Blackboard component */
+	void setTarget(class AActor* target);
+
+	/** This returns the Blackboard component */
+	class AActor* getTarget() const;
+
 protected:
 	uint8 m_TargetKeyID;
-	uint8 m_TargetLocationID;
 };

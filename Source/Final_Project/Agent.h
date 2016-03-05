@@ -23,6 +23,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
-	UPROPERTY(EditAnywhere, Category = Behaviour)
-	class UBehaviorTree* m_Behaviour;
+	/* Behaviour Tree to be used */
+	UPROPERTY(EditAnywhere, Category = BehaviourTree)
+		class UBehaviorTree* m_AgentBehaviour;
+
+	UPROPERTY(EditAnywhere, Category = Path)
+		AActor* targetPoint;
 };
