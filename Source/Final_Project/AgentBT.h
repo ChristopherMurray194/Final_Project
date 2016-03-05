@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BehaviorTreeComponent.h"
 #include "AgentBT.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class FINAL_PROJECT_API UAgentBT : public UBehaviorTree
+class FINAL_PROJECT_API UAgentBT : public UBehaviorTreeComponent
 {
 	GENERATED_BODY()
 	
