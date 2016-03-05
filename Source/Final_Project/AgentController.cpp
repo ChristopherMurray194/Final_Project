@@ -18,7 +18,7 @@ void AAgentController::Possess(class APawn* InPawn)
 	Super::Possess(InPawn);
 	AAgent* agent = Cast<AAgent>(InPawn);
 
-	// Start behaviour
+	// Start behaviour tree
 	if (agent && agent->m_AgentBehaviour)
 	{
 		m_BlackboardComp->InitializeBlackboard(*(agent->m_AgentBehaviour->BlackboardAsset));
