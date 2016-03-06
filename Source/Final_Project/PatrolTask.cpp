@@ -24,16 +24,11 @@ EBTNodeResult::Type UPatrolTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 	}
 	else
 	{
-		// Get the first path node location
+		// Get the target node location
 		APathNode* target = agentController->getTarget();
 
 		// Move to target location
-		agentController->MoveToActor(target, AcceptanceRadius);
-
-		if (agentController->GetMoveStatus() != EPathFollowingStatus::Moving)
-		{
-			agentController->MoveToActor(target->GetNextNode());
-		}
+		agentController->MoveTo(target);
 
 		// Task executed successfully
 		return EBTNodeResult::Succeeded;

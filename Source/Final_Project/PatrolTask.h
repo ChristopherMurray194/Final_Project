@@ -16,6 +16,6 @@ class FINAL_PROJECT_API UPatrolTask : public UBTTaskNode
 	UPatrolTask();
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
 
-private:
+	UPROPERTY(EditAnywhere, Category = Node)
 	float AcceptanceRadius = 100.0f;	// The distance from the target the agent may stop.
 };

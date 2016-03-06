@@ -20,8 +20,8 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	class AActor* GetNextNode() const;
+	class APathNode* GetNextNode() const;
 
 	UPROPERTY(EditAnywhere, Category = Node)
-		AActor* NextNode;
+		APathNode* NextNode;
 };

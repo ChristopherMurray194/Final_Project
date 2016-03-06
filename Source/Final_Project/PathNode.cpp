@@ -25,7 +25,7 @@ void APathNode::Tick( float DeltaTime )
 }
 
 // Accessor for the next node in the path
-class AActor* APathNode::GetNextNode() const 
+class APathNode* APathNode::GetNextNode() const 
 { 
 	return NextNode; 
 }
