@@ -40,7 +40,7 @@ void AAgentController::Possess(class APawn* InPawn)
 			GEngine->AddOnScreenDebugMessage(-1,			// Key: Passing -1 means create new message. Not passing -1, means update message each tick - UE4 API
 											60.f,			// Display time (seconds)
 											FColor::Red,	// Color
-											FString::Printf(TEXT("There is no Behaviour Tree assigned to %s!"), *agent->GetName())	// Message to display
+											FString::Printf(TEXT("There is no Behaviour Tree assigned to %s!"), *agent->GetActorLabel())	// Message to display
 											);
 		}
 		if (GEngine && !agent->PathNode)
@@ -48,7 +48,7 @@ void AAgentController::Possess(class APawn* InPawn)
 			GEngine->AddOnScreenDebugMessage(-1,
 											60.f, 
 											FColor::Red, 
-											FString::Printf(TEXT("There is no PathNode assigned to %s!"), *agent->GetName())
+											FString::Printf(TEXT("There is no PathNode assigned to %s!"), *agent->GetActorLabel())
 											);
 		}
 	}
