@@ -3,13 +3,14 @@
 #include "Final_Project.h"
 #include "Agent.h"
 
-
 // Sets default values
 AAgent::AAgent()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	GetCharacterMovement()->MaxWalkSpeed = 300.0f;			// Set the maximum walk speed.
+	GetCharacterMovement()->MaxWalkSpeedCrouched = 160.0f;	// Set the maximum walk speed whilst crouched.
 }
 
 // Called when the game starts or when spawned

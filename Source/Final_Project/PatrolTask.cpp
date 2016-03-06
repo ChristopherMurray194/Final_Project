@@ -3,6 +3,7 @@
 #include "Final_Project.h"
 #include "PatrolTask.h"
 #include "AgentController.h"
+#include "PathNode.h"
 
 UPatrolTask::UPatrolTask()
 {
@@ -23,11 +24,16 @@ EBTNodeResult::Type UPatrolTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 	}
 	else
 	{
-		// Get the target location
-		AActor* target = agentController->getTarget();
+		// Get the first path node location
+		APathNode* target = agentController->getTarget();
 
 		// Move to target location
-		agentController->MoveToActor(target, 100.0f, true, true, true);
+		agentController->MoveToActor(target, AcceptanceRadius);
+
+		if (agentController->GetMoveStatus() != EPathFollowingStatus::Moving)
+		{
+			agentController->MoveToActor(target->GetNextNode());
+		}
 
 		// Task executed successfully
 		return EBTNodeResult::Succeeded;

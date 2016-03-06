@@ -27,6 +27,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = BehaviourTree)
 		class UBehaviorTree* m_AgentBehaviour;
 
+		// If not set to value Editor will crash
 	UPROPERTY(EditAnywhere, Category = Path)
-		AActor* targetPoint;
+		class APathNode* targetPoint;
 };
