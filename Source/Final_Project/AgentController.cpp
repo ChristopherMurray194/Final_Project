@@ -6,6 +6,7 @@
 #include "PathNode.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Engine.h"
 
 AAgentController::AAgentController()
 {
@@ -20,17 +21,36 @@ void AAgentController::Possess(class APawn* InPawn)
 	Super::Possess(InPawn);
 	AAgent* agent = Cast<AAgent>(InPawn);
 
-	// Start behaviour tree
-	if (agent && agent->m_AgentBehaviour)
+	// Check there is an Agent, AgentBT and PathNode for the agent.
+	if (agent && agent->AgentBehaviourTree && agent->PathNode)
 	{
-		m_BlackboardComp->InitializeBlackboard(*(agent->m_AgentBehaviour->BlackboardAsset));
+		m_BlackboardComp->InitializeBlackboard(*(agent->AgentBehaviourTree->BlackboardAsset));
 
 		// String name MUST corresond EXACTLY to name of key in Blackboard editor
 		m_TargetKeyID = m_BlackboardComp->GetKeyID("Target");
 		// Sets the target point value in the blackboard
-		setTarget(m_TargetKeyID, agent->targetPoint);
+		setTarget(m_TargetKeyID, agent->PathNode);
 
-		m_BehvaiourTreeComp->StartTree(*(agent->m_AgentBehaviour));
+		m_BehvaiourTreeComp->StartTree(*(agent->AgentBehaviourTree));
+	}
+	else // Handle errors
+	{
+		if (GEngine && !agent->AgentBehaviourTree)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,			// Key: Passing -1 means create new message. Not passing -1, means update message each tick - UE4 API
+											60.f,			// Display time (seconds)
+											FColor::Red,	// Color
+											FString::Printf(TEXT("There is no Behaviour Tree assigned to %s!"), *agent->GetName())	// Message to display
+											);
+		}
+		if (GEngine && !agent->PathNode)
+		{
+			GEngine->AddOnScreenDebugMessage(-1,
+											60.f, 
+											FColor::Red, 
+											FString::Printf(TEXT("There is no PathNode assigned to %s!"), *agent->GetName())
+											);
+		}
 	}
 }
 
