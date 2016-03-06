@@ -4,7 +4,6 @@
 #include "FindNextNode.h"
 #include "AgentController.h"
 #include "PathNode.h"
-#include "BehaviorTree/BlackboardComponent.h"
 
 UFindNextNode::UFindNextNode()
 {
@@ -15,7 +14,6 @@ UFindNextNode::UFindNextNode()
 EBTNodeResult::Type UFindNextNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	UBehaviorTreeComponent* BTComp = &OwnerComp;
-	UBlackboardComponent* BBComp = BTComp->GetBlackboardComponent();
 	AAgentController* agentController = BTComp ? Cast<AAgentController>(BTComp->GetOwner()) : NULL;
 
 	if (agentController == NULL)
@@ -25,15 +23,12 @@ EBTNodeResult::Type UFindNextNode::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	}
 	else
 	{
-		if (BBComp)
-		{
-			// Get the blackboard component key ID, Target node
-			m_TargetKeyID = BBComp->GetKeyID("Target");
-			// Get the current node in path (in the blackboard)
-			APathNode* CurrentNode = Cast<APathNode>(agentController->getTarget());
-			// Set the Current node in path as next node in path (in the blackboard)
-			agentController->setTarget(m_TargetKeyID, CurrentNode->GetNextNode());
-		}
+		// Get the blackboard component key ID, Target node
+		m_TargetKeyID = FName("Target");
+		// Get the current node in path (in the blackboard)
+		APathNode* CurrentNode = Cast<APathNode>(agentController->getTarget());
+		// Set the Current node in path as next node in path (in the blackboard)
+		agentController->setTarget(m_TargetKeyID, CurrentNode->GetNextNode());
 		// Task succeeded
 		return EBTNodeResult::Succeeded;
 	}

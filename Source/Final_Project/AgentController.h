@@ -26,11 +26,11 @@ public:
 	virtual void Possess(class APawn* InPawn);	// Override function
 
 	/** Sets a Blackboard component */
-	void setTarget(uint8 targetKeyID, class APathNode* target);
+	void setTarget(const FName& targetKeyID, class APathNode* target);
 
 	/** This returns the Blackboard component */
 	class APathNode* getTarget() const;
 
 protected:
-	uint8 m_TargetKeyID;	// First position in path
+	FName m_TargetKeyID;	// First position in path
 };

@@ -17,5 +17,5 @@ class FINAL_PROJECT_API UFindNextNode : public UBTTaskNode
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
 
 protected:
-	uint8 m_TargetKeyID;	// Current path node KeyID in blackboard
+	FName m_TargetKeyID;	// Current path node KeyID in blackboard
 };

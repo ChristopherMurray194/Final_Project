@@ -24,10 +24,11 @@ void AAgentController::Possess(class APawn* InPawn)
 	// Check there is an Agent, AgentBT and PathNode for the agent.
 	if (agent && agent->AgentBehaviourTree && agent->PathNode)
 	{
+		// Get the blackboard asset linked to the Agent's behaviour tree
 		m_BlackboardComp->InitializeBlackboard(*(agent->AgentBehaviourTree->BlackboardAsset));
 
 		// String name MUST corresond EXACTLY to name of key in Blackboard editor
-		m_TargetKeyID = m_BlackboardComp->GetKeyID("Target");
+		m_TargetKeyID = FName("Target");	// Convert string to FName
 		// Sets the target point value in the blackboard
 		setTarget(m_TargetKeyID, agent->PathNode);
 
@@ -54,7 +55,7 @@ void AAgentController::Possess(class APawn* InPawn)
 	}
 }
 
-void AAgentController::setTarget(uint8 targetKeyID, class APathNode* target)
+void AAgentController::setTarget(const FName& targetKeyID, class APathNode* target)
 {
 	if (m_BlackboardComp)
 	{
