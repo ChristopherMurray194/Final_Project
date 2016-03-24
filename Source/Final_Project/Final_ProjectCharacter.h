@@ -52,6 +52,43 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+	//==================Crouching===================//
+	
+	// Crouch button is pressed
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Crouching")
+		bool crouch_button_down = false;
+
+	void Crouch();
+	void UnCrouch();
+	//==============================================//
+
+	//===================Jumping====================//
+	
+	// Jump button is pressed
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Jumping")
+		bool jump_button_down = false;
+	
+	void Jump();
+	void StopJumping();
+	//==============================================//
+
+	//=============Sprint Functionality=============//
+	//UPROPERTY(EditAnywhere, Category = "Sprint")
+		//UAnimSequence *SprintAnim;
+
+	// Default speed 
+	UPROPERTY(EditAnywhere, Category = "MovementSpeeds")
+		float defaultSpeed = 400.0f;
+	// Sprint speed
+	UPROPERTY(EditAnywhere, Category = "MovementSpeeds")
+		float SprintSpeed = 800.0f;
+
+	/** Called for sprint input */
+	void Sprint();
+	/** Called to reset the walking speed to default */
+	void StopSprinting();
+	//==============================================//
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;

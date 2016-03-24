@@ -28,7 +28,7 @@ public:
 	/** Sets a Blackboard component */
 	void setTarget(const FName& targetKeyID, class APathNode* target);
 
-	/** This returns the Blackboard component */
+	/** This returns the target (that is the PathNode) blackboard component */
 	class APathNode* getTarget() const;
 
 protected:

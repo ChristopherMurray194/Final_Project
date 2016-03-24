@@ -24,10 +24,9 @@ EBTNodeResult::Type UPatrolTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 	}
 	else
 	{
-		// Get the target node location
+		// Get the PathNode location
 		APathNode* target = agentController->getTarget();
-
-		// Move to target location
+		// Call the MoveTo function inherited from AIController class
 		agentController->MoveTo(target);
 
 		// Task executed successfully
