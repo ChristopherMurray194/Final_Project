@@ -138,7 +138,7 @@ void AFinal_ProjectCharacter::MoveRight(float Value)
 
 void AFinal_ProjectCharacter::Sprint()
 {
-	if (Controller != NULL)
+	if (Controller != NULL && !crouch_button_down)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 	}
