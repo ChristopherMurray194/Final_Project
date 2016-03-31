@@ -29,26 +29,6 @@ ABaseCharacter::ABaseCharacter()
 			// Assign the animation blueprint to the mesh
 			GetMesh()->SetAnimInstanceClass(AnimationAsset.Class);
 		}
-
-		/*	Check this instance is not the temporary/preview instance,
-			Spawn only when placed in the world */
-		if (!UObject::IsTemplate(RF_Transient))
-		{
-			UWorld* const World = GetWorld();
-			if (World)
-			{
-				// Required by SpawnActor function
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.Owner = this;
-				SpawnParams.Instigator = Instigator;
-
-				// Spawn a Rifle object
-				ARifle* const SpawnedRifle = World->SpawnActor<ARifle>(SpawnParams);
-
-				if (SpawnedRifle != NULL)
-					SpawnedRifle->AttachRootComponentTo(GetMesh(), TEXT("GunSocket"), EAttachLocation::SnapToTargetIncludingScale, true);
-			}
-		}
 	}
 }
 
@@ -56,7 +36,22 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+ 
+	// Spawn Rifle in when game starts
+	UWorld* const World = GetWorld();
+	if (World)
+	{
+		// Required by SpawnActor function
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = Instigator;
 
+		// Spawn a Rifle object
+		SpawnedRifle = World->SpawnActor<ARifle>(SpawnParams);
+
+		if (SpawnedRifle != NULL)
+			SpawnedRifle->AttachRootComponentTo(GetMesh(), TEXT("GunSocket"), EAttachLocation::SnapToTargetIncludingScale, true);
+	}
 }
 
 // Called every frame
@@ -104,4 +99,15 @@ void ABaseCharacter::AimDownSight(){ isAiming = true; }
 
 void ABaseCharacter::StopAiming(){ isAiming = false; }
 
+void ABaseCharacter::Fire()
+{ 
+	if (SpawnedRifle != NULL)
+		isFiring = SpawnedRifle->PullTrigger();
+}
+
+void ABaseCharacter::StopFiring()
+{
+	if (SpawnedRifle != NULL)
+		isFiring = SpawnedRifle->ReleaseTrigger();
+}
 

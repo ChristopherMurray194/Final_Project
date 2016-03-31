@@ -26,14 +26,12 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-protected:
-
-	bool isTriggerPulled = false;
-
 	// Called when the fire key is pressed
-	void PullTrigger();
+	bool PullTrigger();
 	// Called when the fire key is released
-	void ReleaseTrigger();
+	bool ReleaseTrigger();
+
+protected:
 	void Fire();
 	
 private:

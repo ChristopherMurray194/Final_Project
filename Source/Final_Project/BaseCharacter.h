@@ -61,6 +61,18 @@ public:
 	void StopAiming();
 	//==============================================//
 
+	//===================Fire=======================//
+
+	// Spawned rifle
+	class ARifle* SpawnedRifle;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool isFiring = false;
+
+	void Fire();
+	void StopFiring();
+	//==============================================//
+
 	//=============Sprint Functionality=============//
 
 	// Default speed 

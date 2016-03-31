@@ -30,7 +30,7 @@ ARifle::ARifle()
 		ArrowComp = CreateDefaultSubobject<UArrowComponent>(TEXT("Projectile_Spawn_Point"));
 		ArrowComp->AttachTo(GunMesh);
 		ArrowComp->SetRelativeLocation(FVector(0.0f, 50.0f, 11.0f));
-		ArrowComp->SetWorldRotation(FRotator(0.0f, 0.0f, 90.0f));
+		ArrowComp->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
 		ArrowComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 }
@@ -49,10 +49,9 @@ void ARifle::Tick( float DeltaTime )
 
 }
 
-void ARifle::PullTrigger()
+bool ARifle::PullTrigger()
 {
-	isTriggerPulled = true;
-	
+	Fire();
 	// Start Timer and run Fire() function
 	UWorld* World = GetWorld();
 	if (World)
@@ -63,18 +62,22 @@ void ARifle::PullTrigger()
 			World->GetTimerManager().SetTimer(TimerHandle, this, &ARifle::Fire, 1.0f / RPS, true);
 		}
 	}
+	// Trigger pulled
+	return true;
 }
 
-void ARifle::ReleaseTrigger()
+bool ARifle::ReleaseTrigger()
 {
-	isTriggerPulled = false;
-
 	// Clear Timer
 	UWorld* World = GetWorld();
 	if (World)
 	{
 		World->GetTimerManager().ClearTimer(TimerHandle);
+		// Invalidate the tiemrhandle so the timer can be set again in the PullTrigger function
+		TimerHandle.Invalidate();
 	}
+	// Trigger not pulled
+	return false;
 }
 
 void ARifle::Fire()
@@ -86,12 +89,16 @@ void ARifle::Fire()
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;
-
+		// Get the Location of the Arrow component which defines the gun muzzle location
+		FVector SpawnLocation = ArrowComp->GetComponentTransform().GetLocation();
+		// Get the Rotation of the Arrow component which defines the gun muzzle location
+		FRotator SpawnRotation = (FRotator)ArrowComp->GetComponentTransform().GetRotation();
+		
 		// Spawn a Projectile object
 		AProjectile* const SpawnedProjectile = World->SpawnActor<AProjectile>(
-			ArrowComp->GetRelativeTransform().GetLocation(),			// Location to spawn at
-			(FRotator)ArrowComp->GetRelativeTransform().GetRotation(),	// Rotation to spawn in
-			SpawnParams													// Spawn Paramaters
+			SpawnLocation,	// Location to the Arrow
+			SpawnRotation,	// Rotation of the Arrow
+			SpawnParams		// Spawn Paramaters
 			);
 	}
 }

@@ -53,24 +53,32 @@ void AFinal_ProjectCharacter::SetupPlayerInputComponent(class UInputComponent* I
 {
 	// Set up gameplay key bindings
 	check(InputComponent);
+	// Handle space bar input
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AFinal_ProjectCharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AFinal_ProjectCharacter::StopJumping);
 	
+	// Hnadle C key input
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &AFinal_ProjectCharacter::Crouch);
 	InputComponent->BindAction("Crouch", IE_Released, this, &AFinal_ProjectCharacter::UnCrouch);
 
 	// Use same input as Crouch (C key), but only fire when double pressed
 	InputComponent->BindAction("Prone", IE_DoubleClick, this, &AFinal_ProjectCharacter::GoProne);
 
+	// Handle WASD key input
 	InputComponent->BindAxis("MoveForward", this, &AFinal_ProjectCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &AFinal_ProjectCharacter::MoveRight);
 
-	// Sprint logic
+	// Handle left shift key input
 	InputComponent->BindAction("Sprint", IE_Pressed, this, &ABaseCharacter::Sprint);
 	InputComponent->BindAction("Sprint", IE_Released, this, &ABaseCharacter::StopSprinting);
 
+	// Handle right mouse button input
 	InputComponent->BindAction("Aim", IE_Pressed, this, &ABaseCharacter::AimDownSight);
 	InputComponent->BindAction("Aim", IE_Released, this, &ABaseCharacter::StopAiming);
+
+	// Handle left mouse button input
+	InputComponent->BindAction("Fire", IE_Pressed, this, &ABaseCharacter::Fire);
+	InputComponent->BindAction("Fire", IE_Released, this, &ABaseCharacter::StopFiring);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.

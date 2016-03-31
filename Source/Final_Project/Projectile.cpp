@@ -21,7 +21,7 @@ AProjectile::AProjectile()
 	{
 		SphereVisual->SetStaticMesh(SphereVisualAsset.Object);
 		SphereVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		SphereVisual->SetWorldScale3D(FVector(0.1f, 0.01f, 0.01f));
+		SphereVisual->SetWorldScale3D(FVector(0.2f, 0.04f, 0.02f));
 		SphereVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// Set non collidable
 
 		static ConstructorHelpers::FObjectFinder<UMaterial> MaterialAsset(TEXT("/Game/Materials/BulletMat"));
