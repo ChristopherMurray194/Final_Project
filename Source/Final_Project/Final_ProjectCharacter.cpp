@@ -16,6 +16,9 @@ AFinal_ProjectCharacter::AFinal_ProjectCharacter()
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
+	
+	// Change sprint speed for player
+	SprintSpeed = 1000.0f;
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
@@ -27,7 +30,6 @@ AFinal_ProjectCharacter::AFinal_ProjectCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
-	GetCharacterMovement()->MaxWalkSpeed = defaultSpeed;	// Set the default movement speed
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -53,16 +55,22 @@ void AFinal_ProjectCharacter::SetupPlayerInputComponent(class UInputComponent* I
 	check(InputComponent);
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AFinal_ProjectCharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AFinal_ProjectCharacter::StopJumping);
-
+	
 	InputComponent->BindAction("Crouch", IE_Pressed, this, &AFinal_ProjectCharacter::Crouch);
 	InputComponent->BindAction("Crouch", IE_Released, this, &AFinal_ProjectCharacter::UnCrouch);
+
+	// Use same input as Crouch (C key), but only fire when double pressed
+	InputComponent->BindAction("Prone", IE_DoubleClick, this, &AFinal_ProjectCharacter::GoProne);
 
 	InputComponent->BindAxis("MoveForward", this, &AFinal_ProjectCharacter::MoveForward);
 	InputComponent->BindAxis("MoveRight", this, &AFinal_ProjectCharacter::MoveRight);
 
 	// Sprint logic
-	InputComponent->BindAction("Sprint", IE_Pressed, this, &AFinal_ProjectCharacter::Sprint);
-	InputComponent->BindAction("Sprint", IE_Released, this, &AFinal_ProjectCharacter::StopSprinting);
+	InputComponent->BindAction("Sprint", IE_Pressed, this, &ABaseCharacter::Sprint);
+	InputComponent->BindAction("Sprint", IE_Released, this, &ABaseCharacter::StopSprinting);
+
+	InputComponent->BindAction("Aim", IE_Pressed, this, &ABaseCharacter::AimDownSight);
+	InputComponent->BindAction("Aim", IE_Released, this, &ABaseCharacter::StopAiming);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -136,38 +144,51 @@ void AFinal_ProjectCharacter::MoveRight(float Value)
 	}
 }
 
-void AFinal_ProjectCharacter::Sprint()
-{
-	if (Controller != NULL && !crouch_button_down)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
-	}
-}
-
-void AFinal_ProjectCharacter::StopSprinting()
-{
-	if (Controller != NULL)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = defaultSpeed;
-	}
-}
-
 void AFinal_ProjectCharacter::Crouch()
 {
-	crouch_button_down = true;
+	/* 
+	Check to ensure isProne not true otherwise, pressing C whilst
+	in prone can stop reverting back to standing whilst in prone
+	*/
+	// First key press
+	if (!StopCrouching && !isProne)
+		// Crouch
+		isCrouching = true;
+
+	// Second key press
+	if (StopCrouching && !isProne)
+		// UnCrouch
+		isCrouching = false;
 }
 
 void AFinal_ProjectCharacter::UnCrouch()
 {
-	crouch_button_down = false;
+	// If we are crouching (first key press)
+	if (isCrouching)
+		// On the second key press we want to be able to stop crouching
+		StopCrouching = true;
+
+	// If we are not crouching (second key press)
+	if (!isCrouching)
+		// On the next key press we want to be able to crouch
+		StopCrouching = false;
 }
 
-void AFinal_ProjectCharacter::Jump()
+void AFinal_ProjectCharacter::GoProne()
 {
-	jump_button_down = true;
-}
-
-void AFinal_ProjectCharacter::StopJumping()
-{
-	jump_button_down = false;
+	// If we are already standing
+	if (!CanStand && !isCrouching)
+	{
+		// Go prone
+		isProne = true;
+		// We want to be able to stand up
+		CanStand = true;
+	}
+	else if(CanStand && !isCrouching)// If can stand up
+	{
+		// Exit prone
+		isProne = false;
+		// Cannot stand because we are already standing
+		CanStand = false;
+	}
 }

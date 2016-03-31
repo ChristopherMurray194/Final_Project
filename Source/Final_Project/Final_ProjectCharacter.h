@@ -1,10 +1,10 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "Final_ProjectCharacter.generated.h"
 
 UCLASS(config=Game)
-class AFinal_ProjectCharacter : public ACharacter
+class AFinal_ProjectCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -52,42 +52,19 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
-	//==================Crouching===================//
+	//============Crouching==============//
+	bool StopCrouching = false;
 	
-	// Crouch button is pressed
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Crouching")
-		bool crouch_button_down = false;
+	//**** If the editor crashes suddenly the overriding of these virtual functions may be the cause. ****//
+	virtual void Crouch() override;
+	virtual void UnCrouch() override;
+	//===================================//
 
-	void Crouch();
-	void UnCrouch();
-	//==============================================//
+	//============Prone==================//
+	bool CanStand = false;
 
-	//===================Jumping====================//
-	
-	// Jump button is pressed
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Jumping")
-		bool jump_button_down = false;
-	
-	void Jump();
-	void StopJumping();
-	//==============================================//
-
-	//=============Sprint Functionality=============//
-	//UPROPERTY(EditAnywhere, Category = "Sprint")
-		//UAnimSequence *SprintAnim;
-
-	// Default speed 
-	UPROPERTY(EditAnywhere, Category = "MovementSpeeds")
-		float defaultSpeed = 400.0f;
-	// Sprint speed
-	UPROPERTY(EditAnywhere, Category = "MovementSpeeds")
-		float SprintSpeed = 800.0f;
-
-	/** Called for sprint input */
-	void Sprint();
-	/** Called to reset the walking speed to default */
-	void StopSprinting();
-	//==============================================//
+	virtual void GoProne() override;
+	//===================================//
 
 protected:
 	// APawn interface

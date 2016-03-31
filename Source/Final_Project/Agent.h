@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "Agent.generated.h"
 
 UCLASS()
-class FINAL_PROJECT_API AAgent : public ACharacter
+class FINAL_PROJECT_API AAgent : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -14,20 +14,11 @@ public:
 	// Sets default values for this character's properties
 	AAgent();
 
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
-	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-
-	/* Behaviour Tree to be used */
-	UPROPERTY(EditAnywhere, Category = BehaviourTree)
+	// The behaviour tree to be used
+	UPROPERTY(EditAnywhere, Category = "Behaviour Tree")
 		class UBehaviorTree* AgentBehaviourTree;
 
-	// If not set to value Editor will crash
+	// If not set to value Editor may crash
 	UPROPERTY(EditAnywhere, Category = Path)
 		class APathNode* PathNode;
 };
