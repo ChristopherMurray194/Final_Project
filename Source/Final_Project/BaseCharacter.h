@@ -14,6 +14,8 @@ public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
 
+	virtual void PostInitializeComponents();
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	

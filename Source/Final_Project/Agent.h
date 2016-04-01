@@ -14,6 +14,8 @@ public:
 	// Sets default values for this character's properties
 	AAgent();
 
+	virtual void PostInitializeComponents();
+
 	// The behaviour tree to be used
 	UPROPERTY(EditAnywhere, Category = "Behaviour Tree")
 		class UBehaviorTree* AgentBehaviourTree;
@@ -21,4 +23,8 @@ public:
 	// If not set to value Editor may crash
 	UPROPERTY(EditAnywhere, Category = Path)
 		class APathNode* PathNode;
+
+private:
+	// Colour of the enemy
+	FLinearColor EnemyColor = FLinearColor( (139.0f / 255.0f), (26.0f / 255.0f), (26.0f / 255.0f), 1.0f);
 };

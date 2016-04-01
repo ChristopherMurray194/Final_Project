@@ -9,14 +9,14 @@ UCLASS()
 class FINAL_PROJECT_API ARifle : public AActor
 {
 	GENERATED_BODY()
-	
+
+public:
 	UPROPERTY(EditAnywhere)
 		USkeletalMeshComponent* GunMesh;
 
 	UPROPERTY(EditAnywhere)
 		UArrowComponent* ArrowComp;
 
-public:	
 	// Sets default values for this actor's properties
 	ARifle();
 

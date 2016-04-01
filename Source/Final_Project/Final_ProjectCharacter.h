@@ -18,6 +18,8 @@ class AFinal_ProjectCharacter : public ABaseCharacter
 public:
 	AFinal_ProjectCharacter();
 
+	virtual void PostInitializeComponents();
+
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseTurnRate;
@@ -25,6 +27,9 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+private:
+	FLinearColor PlayerColor = FLinearColor(0.0f, (128.0f / 255.0f), (128.0f / 255.0f), 1.0f);
 
 protected:
 

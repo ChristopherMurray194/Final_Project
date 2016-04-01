@@ -7,7 +7,12 @@
 // Sets default values
 AAgent::AAgent()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
 
+}
+
+void AAgent::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	// Set the Agent colour
+	GetMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), EnemyColor);
 }

@@ -9,9 +9,6 @@
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	GetCharacterMovement()->MaxWalkSpeed = defaultSpeed;	// Set the default movement speed
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin"));
@@ -31,6 +28,12 @@ ABaseCharacter::ABaseCharacter()
 			GetMesh()->SetAnimInstanceClass(AnimationAsset.Class);
 		}
 	}
+}
+
+void ABaseCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
 }
 
 // Called when the game starts or when spawned
