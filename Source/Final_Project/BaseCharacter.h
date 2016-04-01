@@ -29,8 +29,8 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		bool isCrouching = false;
 
-	virtual void Crouch();
-	virtual void UnCrouch();
+	void Crouch();
+	void UnCrouch();
 	//==============================================//
 
 	//===================Prone======================//
@@ -71,6 +71,14 @@ public:
 
 	void Fire();
 	void StopFiring();
+
+	UPROPERTY(BlueprintReadOnly)
+		bool isReloading = false;
+	
+	/** Reload the weapon */
+	virtual void BeginReload();
+	/** Reset isReloading so we can reload again */
+	virtual void EndReload();
 	//==============================================//
 
 	//=============Sprint Functionality=============//

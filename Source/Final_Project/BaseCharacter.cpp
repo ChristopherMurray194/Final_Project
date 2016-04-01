@@ -4,6 +4,7 @@
 #include "BaseCharacter.h"
 #include "Rifle.h"
 #include "Animation/AnimInstance.h"
+#include "Engine.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -111,3 +112,13 @@ void ABaseCharacter::StopFiring()
 		isFiring = SpawnedRifle->ReleaseTrigger();
 }
 
+void ABaseCharacter::BeginReload()
+{ 
+	isReloading = true; 
+	// Reload
+	if (SpawnedRifle != NULL)
+		// Reset AmmoCount
+		SpawnedRifle->SetAmmoCount(SpawnedRifle->GetClipSize());
+}
+
+void ABaseCharacter::EndReload(){ isReloading = false; }

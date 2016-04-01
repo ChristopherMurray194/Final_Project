@@ -80,6 +80,10 @@ void AFinal_ProjectCharacter::SetupPlayerInputComponent(class UInputComponent* I
 	InputComponent->BindAction("Fire", IE_Pressed, this, &ABaseCharacter::Fire);
 	InputComponent->BindAction("Fire", IE_Released, this, &ABaseCharacter::StopFiring);
 
+	// Handle R key input
+	InputComponent->BindAction("Reload", IE_Pressed, this, &ABaseCharacter::BeginReload);
+	InputComponent->BindAction("Reload", IE_Released, this, &ABaseCharacter::EndReload);
+
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
 	// "turnrate" is for devices that we choose to treat as a rate of change, such as an analog joystick

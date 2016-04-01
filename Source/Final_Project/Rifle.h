@@ -31,13 +31,26 @@ public:
 	// Called when the fire key is released
 	bool ReleaseTrigger();
 
-protected:
-	void Fire();
+	//=================Ammo========================//
+	/** Calculate the remaining ammo */
+	int CalculateAmmo();
+
+	// AmmoCount mutator
+	void SetAmmoCount(int Delta);
+
+	// ClipSize Accessor
+	int GetClipSize();
+	//=============================================//
 	
 private:
 	// Timer handle
 	FTimerHandle TimerHandle;
 
+	void Fire();
 	// Rounds per second
 	float RPS = 10.0f;
+
+	int ClipSize = 30;
+	// Ammo per clip/magazine
+	int AmmoCount = ClipSize;
 };

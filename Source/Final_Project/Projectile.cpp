@@ -11,8 +11,9 @@ AProjectile::AProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("Collision_Component"));
-	CollisionComp->SetSphereRadius(10.0f);
+	CollisionComp->SetSphereRadius(3.0f);
 	CollisionComp->AttachTo(RootComponent);
+	CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	SphereVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere_Mesh"));
 	SphereVisual->AttachTo(CollisionComp);
@@ -20,9 +21,9 @@ AProjectile::AProjectile()
 	if (SphereVisualAsset.Succeeded())
 	{
 		SphereVisual->SetStaticMesh(SphereVisualAsset.Object);
-		SphereVisual->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
+		SphereVisual->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
 		SphereVisual->SetWorldScale3D(FVector(0.2f, 0.04f, 0.02f));
-		SphereVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// Set non collidable
+		SphereVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		static ConstructorHelpers::FObjectFinder<UMaterial> MaterialAsset(TEXT("/Game/Materials/BulletMat"));
 		if (MaterialAsset.Succeeded())
@@ -49,4 +50,3 @@ void AProjectile::Tick( float DeltaTime )
 	Super::Tick( DeltaTime );
 
 }
-

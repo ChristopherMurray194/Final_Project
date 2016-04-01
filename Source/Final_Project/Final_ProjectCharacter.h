@@ -56,8 +56,8 @@ protected:
 	bool StopCrouching = false;
 	
 	//**** If the editor crashes suddenly the overriding of these virtual functions may be the cause. ****//
-	virtual void Crouch() override;
-	virtual void UnCrouch() override;
+	void Crouch();
+	void UnCrouch();
 	//===================================//
 
 	//============Prone==================//

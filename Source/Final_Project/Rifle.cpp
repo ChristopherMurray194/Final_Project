@@ -82,23 +82,47 @@ bool ARifle::ReleaseTrigger()
 
 void ARifle::Fire()
 {
-	UWorld* const World = GetWorld();
-	if (World)
+	// Can only fire if there is available ammo
+	if (CalculateAmmo() > 0)
 	{
-		// Required by SpawnActor function
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = Instigator;
-		// Get the Location of the Arrow component which defines the gun muzzle location
-		FVector SpawnLocation = ArrowComp->GetComponentTransform().GetLocation();
-		// Get the Rotation of the Arrow component which defines the gun muzzle location
-		FRotator SpawnRotation = (FRotator)ArrowComp->GetComponentTransform().GetRotation();
-		
-		// Spawn a Projectile object
-		AProjectile* const SpawnedProjectile = World->SpawnActor<AProjectile>(
-			SpawnLocation,	// Location to the Arrow
-			SpawnRotation,	// Rotation of the Arrow
-			SpawnParams		// Spawn Paramaters
-			);
+		UWorld* const World = GetWorld();
+		if (World)
+		{
+			// Required by SpawnActor function
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = Instigator;
+			// Get the Location of the Arrow component which defines the gun muzzle location
+			FVector SpawnLocation = ArrowComp->GetComponentTransform().GetLocation();
+			// Get the Rotation of the Arrow component which defines the gun muzzle location
+			FRotator SpawnRotation = (FRotator)ArrowComp->GetComponentTransform().GetRotation();
+
+			// Spawn a Projectile object
+			AProjectile* const SpawnedProjectile = World->SpawnActor<AProjectile>(
+				SpawnLocation,	// Location to the Arrow
+				SpawnRotation,	// Rotation of the Arrow
+				SpawnParams		// Spawn Paramaters
+				);
+			if (SpawnedProjectile != NULL)
+			{
+				// Destroy the spawned projectile after 1 second
+				SpawnedProjectile->SetLifeSpan(1.0f);
+				// Projectile is spawned, decrement AmmoCount
+				AmmoCount--;
+			}
+		}
 	}
 }
+
+int ARifle::CalculateAmmo()
+{
+	// No Ammo
+	if (AmmoCount <= 0)
+		return AmmoCount = 0;
+
+	return AmmoCount;
+}
+
+void ARifle::SetAmmoCount(int Delta){ AmmoCount = Delta; }
+
+int ARifle::GetClipSize(){ return ClipSize; }
