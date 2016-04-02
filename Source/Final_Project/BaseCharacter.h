@@ -22,6 +22,10 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
+	// Current tick time
+	UPROPERTY(BlueprintReadOnly)
+		float Time;
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
@@ -61,6 +65,17 @@ public:
 
 	void AimDownSight();
 	void StopAiming();
+
+	FRotator DeltaRotator;
+
+	UPROPERTY(BlueprintReadOnly)
+		float NewYaw;
+	UPROPERTY(BlueprintReadOnly)
+		float NewPitch;
+
+	/** Custom RInterpRot function using SLERP */
+	UFUNCTION(BlueprintCallable, Category = "Interpolation")
+		void CustomRInterpTo(FRotator current, float Interp_Speed);
 	//==============================================//
 
 	//===================Fire=======================//

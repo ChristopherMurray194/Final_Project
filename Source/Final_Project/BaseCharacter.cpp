@@ -62,6 +62,19 @@ void ABaseCharacter::BeginPlay()
 void ABaseCharacter::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
+
+	Time = DeltaTime;
+	// Get the new rotation
+	DeltaRotator = GetControlRotation() - GetActorRotation();
+}
+
+void ABaseCharacter::CustomRInterpTo(FRotator current, float Interp_Speed)
+{
+	FRotator InterpRot = FMath::RInterpTo(current, DeltaRotator, Time, Interp_Speed);
+
+	// Break the rotator into pitch and yaw
+	NewYaw = FMath::ClampAngle(InterpRot.Yaw, -90.0f, 90.0f);
+	NewPitch = FMath::ClampAngle(InterpRot.Pitch, -90.0f, 90.0f);
 }
 
 // Called to bind functionality to input
