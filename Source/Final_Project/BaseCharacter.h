@@ -52,7 +52,7 @@ public:
 	//===================Jumping====================//
 
 	// Jump button is pressed
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 		bool isJumping = false;
 
 	void Jump();

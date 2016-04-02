@@ -2,12 +2,14 @@
 
 #include "Final_Project.h"
 #include "Agent.h"
+#include "AgentController.h"
 #include "Engine/Engine.h"
 
 // Sets default values
 AAgent::AAgent()
 {
-
+	// Set the AIController class to use the AgentController class on instantiation
+	AIControllerClass = AAgentController::StaticClass();
 }
 
 void AAgent::PostInitializeComponents()
