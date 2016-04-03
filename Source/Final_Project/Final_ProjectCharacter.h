@@ -31,6 +31,10 @@ public:
 private:
 	FLinearColor PlayerColor = FLinearColor(0.0f, (128.0f / 255.0f), (128.0f / 255.0f), 1.0f);
 
+	/* When Keyboard asterix key pressed twice, character does not use controller yaw */
+	void ToggleControllerYaw();
+	bool UnlockYaw = false;	// Toggle between controller yaw
+
 protected:
 
 	/** Called for forwards/backward input */

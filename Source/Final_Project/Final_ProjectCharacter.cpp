@@ -22,7 +22,7 @@ AFinal_ProjectCharacter::AFinal_ProjectCharacter()
 
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
-	// Rotate when the camera rotates
+	// Rotate when the controller rotates
 	bUseControllerRotationYaw = true;
 	bUseControllerRotationRoll = false;
 
@@ -93,6 +93,9 @@ void AFinal_ProjectCharacter::SetupPlayerInputComponent(class UInputComponent* I
 	// Handle R key input
 	InputComponent->BindAction("Reload", IE_Pressed, this, &ABaseCharacter::BeginReload);
 	InputComponent->BindAction("Reload", IE_Released, this, &ABaseCharacter::EndReload);
+
+	// Handle double press of Y key input
+	InputComponent->BindAction("UnlockYaw", IE_DoubleClick, this, &AFinal_ProjectCharacter::ToggleControllerYaw);
 
 	// We have 2 versions of the rotation bindings to handle different kinds of devices differently
 	// "turn" handles devices that provide an absolute delta, such as a mouse.
@@ -212,5 +215,22 @@ void AFinal_ProjectCharacter::GoProne()
 		isProne = false;
 		// Cannot stand because we are already standing
 		CanStand = false;
+	}
+}
+
+void AFinal_ProjectCharacter::ToggleControllerYaw()
+{
+	// If using controller yaw
+	if (!UnlockYaw)
+	{
+		// Do not use controller yaw
+		bUseControllerRotationYaw = false;
+		UnlockYaw = true;
+	}
+	else if (UnlockYaw) // If not using controller yaw
+	{
+		// Use controller yaw
+		bUseControllerRotationYaw = true;
+		UnlockYaw = false;
 	}
 }
