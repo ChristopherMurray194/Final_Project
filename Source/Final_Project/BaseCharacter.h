@@ -52,7 +52,7 @@ public:
 	//===================Jumping====================//
 
 	// Jump button is pressed
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 		bool isJumping = false;
 
 	void Jump();
@@ -100,13 +100,18 @@ public:
 
 	//=============Sprint Functionality=============//
 
+protected:
 	// Default speed 
 	UPROPERTY(EditAnywhere, Category = "MovementSpeeds")
-		float defaultSpeed = 400.0f;
+		float DefaultSpeed = 400.0f;
 	// Sprint speed
 	UPROPERTY(EditAnywhere, Category = "MovementSpeeds")
 		float SprintSpeed = 600.0f;
+	// Walk speed
+	UPROPERTY(EditAnywhere, Category = "MovementSpeeds")
+		float WalkSpeed = 200.0f;
 
+public:
 	/** Called for sprint input */
 	void Sprint();
 	/** Called to reset the walking speed to default */

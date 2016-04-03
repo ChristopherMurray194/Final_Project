@@ -9,7 +9,7 @@
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
-	GetCharacterMovement()->MaxWalkSpeed = defaultSpeed;	// Set the default movement speed
+	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;	// Set the default movement speed
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin"));
 	if (MeshAsset.Succeeded())
@@ -86,7 +86,11 @@ void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 
 void ABaseCharacter::Sprint()
 {
-	if (Controller != NULL && !isCrouching)
+	// We cannot sprint if we are:
+	if (Controller != NULL 
+		&& !isCrouching		// Crouching
+		&& !isAiming		// Aiming
+		&& !isProne)		// Or prone
 	{
 		GetCharacterMovement()->MaxWalkSpeed = SprintSpeed;
 	}
@@ -96,7 +100,7 @@ void ABaseCharacter::StopSprinting()
 {
 	if (Controller != NULL)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = defaultSpeed;
+		GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
 	}
 }
 
@@ -112,9 +116,26 @@ void ABaseCharacter::Jump(){ isJumping = true; }
 
 void ABaseCharacter::StopJumping(){ isJumping = false; }
 
-void ABaseCharacter::AimDownSight(){ isAiming = true; }
+void ABaseCharacter::AimDownSight()
+{
+	// We cannot aim if we are sprinting
+	if (Controller != NULL && !(GetCharacterMovement()->MaxWalkSpeed >= SprintSpeed) )
+	{
+		isAiming = true;
+		// Slow to a walk
+		GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+	}
+}
 
-void ABaseCharacter::StopAiming(){ isAiming = false; }
+void ABaseCharacter::StopAiming()
+{ 
+	if (Controller != NULL)
+	{
+		isAiming = false;
+		// Go back to normal speed
+		GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;
+	}
+}
 
 void ABaseCharacter::Fire()
 { 
