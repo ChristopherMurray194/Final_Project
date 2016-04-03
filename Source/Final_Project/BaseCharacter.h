@@ -117,4 +117,21 @@ public:
 	/** Called to reset the walking speed to default */
 	void StopSprinting();
 	//==============================================//
+
+	//===============Health System==================//
+
+	// The health of the character
+	UPROPERTY(EditAnywhere, Category = "Health")
+		UINT16 Health = 100;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool isDead = false;
+
+	/* Calculate the health of the character */
+	void CalcHealth();
+
+private:
+	/* Kill the character */
+	void Kill();
+	//==============================================//
 };

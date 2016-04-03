@@ -3,6 +3,7 @@
 #include "Final_Project.h"
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Engine.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -11,10 +12,11 @@ AProjectile::AProjectile()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	CollisionComp = CreateDefaultSubobject<USphereComponent>(TEXT("Collision_Component"));
-	CollisionComp->SetSphereRadius(3.0f);
+	CollisionComp->SetSphereRadius(5.0f);
 	CollisionComp->AttachTo(RootComponent);
-	CollisionComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+	CollisionComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	CollisionComp->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	
 	SphereVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sphere_Mesh"));
 	SphereVisual->AttachTo(CollisionComp);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereVisualAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
@@ -24,7 +26,7 @@ AProjectile::AProjectile()
 		SphereVisual->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
 		SphereVisual->SetWorldScale3D(FVector(0.2f, 0.04f, 0.02f));
 		SphereVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+		
 		static ConstructorHelpers::FObjectFinder<UMaterial> MaterialAsset(TEXT("/Game/Materials/BulletMat"));
 		if (MaterialAsset.Succeeded())
 		{
@@ -49,4 +51,20 @@ void AProjectile::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+}
+
+void AProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if (OtherActor->ActorHasTag(TEXT("Enemy")))
+	{
+		// Destroy the projectile when we collide with an Agent
+		Destroy();
+	}
+	else // If we hit anything that isn't an enemy (including the player)
+	{
+		// Destroy the projectile when we collide
+		Destroy();
+	}
 }

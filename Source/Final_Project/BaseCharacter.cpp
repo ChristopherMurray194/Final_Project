@@ -19,6 +19,7 @@ ABaseCharacter::ABaseCharacter()
 		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -97.0f));
 		GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// Set non collidable
+		GetMesh()->bGenerateOverlapEvents = true; // Allow other actors to overlap
 
 		// Set the animation blueprint to be used
 		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationAsset(TEXT("/Game/AnimStarterPack/UE4ASP_HeroTPP_AnimBlueprint"));
@@ -159,3 +160,22 @@ void ABaseCharacter::BeginReload()
 }
 
 void ABaseCharacter::EndReload(){ isReloading = false; }
+
+void ABaseCharacter::CalcHealth()
+{
+
+}
+
+void ABaseCharacter::Kill()
+{
+	// If the character has no health left
+	if (Health <= 0)
+	{
+		// Ensure the rifle associated with this characer is also destroyed
+		if (SpawnedRifle != NULL)
+			SpawnedRifle->Destroy();
+
+		// Destroy the character
+		Destroy();
+	}
+}

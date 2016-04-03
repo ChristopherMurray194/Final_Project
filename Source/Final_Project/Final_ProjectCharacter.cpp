@@ -12,6 +12,7 @@ AFinal_ProjectCharacter::AFinal_ProjectCharacter()
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	Tags.Add(TEXT("Player")); // This is the player, used to ensure player cannot damage self
 
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
@@ -45,6 +46,9 @@ AFinal_ProjectCharacter::AFinal_ProjectCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	AIControllerClass = APlayerController::StaticClass();
+	// Auto possess player0
+	AutoPossessPlayer = EAutoReceiveInput::Player0;
+	
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -52,6 +56,7 @@ AFinal_ProjectCharacter::AFinal_ProjectCharacter()
 void AFinal_ProjectCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+	
 	// Set the Agent colour
 	GetMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), PlayerColor);
 }

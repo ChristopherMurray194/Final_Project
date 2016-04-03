@@ -10,11 +10,13 @@ AAgent::AAgent()
 {
 	// Set the AIController class to use the AgentController class on instantiation
 	AIControllerClass = AAgentController::StaticClass();
+	Tags.Add(TEXT("Enemy"));
 }
 
 void AAgent::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+	
 	// Set the Agent colour
 	GetMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), EnemyColor);
 }

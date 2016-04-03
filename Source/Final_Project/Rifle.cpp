@@ -105,8 +105,6 @@ void ARifle::Fire()
 				);
 			if (SpawnedProjectile != NULL)
 			{
-				// Destroy the spawned projectile after 1 second
-				SpawnedProjectile->SetLifeSpan(1.0f);
 				// Projectile is spawned, decrement AmmoCount
 				AmmoCount--;
 			}
