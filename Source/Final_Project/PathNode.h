@@ -23,5 +23,5 @@ public:
 	class APathNode* GetNextNode() const;
 
 	UPROPERTY(EditAnywhere, Category = Node)
-		APathNode* NextNode;
+		class APathNode* NextNode;
 };

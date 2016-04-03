@@ -12,10 +12,10 @@ class FINAL_PROJECT_API ARifle : public AActor
 
 public:
 	UPROPERTY(EditAnywhere)
-		USkeletalMeshComponent* GunMesh;
+		class USkeletalMeshComponent* GunMesh;
 
 	UPROPERTY(EditAnywhere)
-		UArrowComponent* ArrowComp;
+		class UArrowComponent* ArrowComp;
 
 	// Sets default values for this actor's properties
 	ARifle();

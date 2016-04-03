@@ -33,7 +33,7 @@ void AAgentController::Possess(class APawn* InPawn)
 		setTarget(m_TargetKeyID, agent->PathNode);
 
 		m_BehvaiourTreeComp->StartTree(*(agent->AgentBehaviourTree));
-	}
+	}/* // Must be commented out when Launching. GetActorLabel function only avaialable in development builds
 	else // Handle errors
 	{
 		if (GEngine && !agent->AgentBehaviourTree)
@@ -52,7 +52,7 @@ void AAgentController::Possess(class APawn* InPawn)
 											FString::Printf(TEXT("There is no PathNode assigned to %s!"), *agent->GetActorLabel())
 											);
 		}
-	}
+	}*/
 }
 
 void AAgentController::setTarget(const FName& targetKeyID, class APathNode* target)

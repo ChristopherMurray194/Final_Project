@@ -17,11 +17,11 @@ public:
 	AAgentController();
 
 	UPROPERTY(transient) // transient property - should not be saved
-		UBlackboardComponent* m_BlackboardComp;
+		class UBlackboardComponent* m_BlackboardComp;
 
 	/** Custom BehaviourTreeComponent */
 	UPROPERTY(transient)
-		UBehaviorTreeComponent* m_BehvaiourTreeComp;
+		class UBehaviorTreeComponent* m_BehvaiourTreeComp;
 
 	virtual void Possess(class APawn* InPawn);	// Override function
 
