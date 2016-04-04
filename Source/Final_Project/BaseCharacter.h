@@ -2,15 +2,17 @@
 
 #pragma once
 
+#include "IDamageable.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
 UCLASS()
-class FINAL_PROJECT_API ABaseCharacter : public ACharacter
+class FINAL_PROJECT_API ABaseCharacter : public ACharacter, public IIDamageable
 {
 	GENERATED_BODY()
 
 public:
+
 	// Sets default values for this character's properties
 	ABaseCharacter();
 
@@ -122,16 +124,18 @@ public:
 
 	// The health of the character
 	UPROPERTY(EditAnywhere, Category = "Health")
-		UINT16 Health = 100;
+		float Health = 100;
 
 	UPROPERTY(BlueprintReadOnly)
 		bool isDead = false;
 
 	/* Calculate the health of the character */
-	void CalcHealth();
+	void CalcHealth(float DamageDealt);
+	FTimerHandle TimerHandle;
+	// Destroy the character after a set interval
+	void DelayedDestroy();
 
-private:
-	/* Kill the character */
-	void Kill();
+public:
+	void DealDamage_Implementation(float Damage);
 	//==============================================//
 };

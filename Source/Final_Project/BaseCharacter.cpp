@@ -161,21 +161,45 @@ void ABaseCharacter::BeginReload()
 
 void ABaseCharacter::EndReload(){ isReloading = false; }
 
-void ABaseCharacter::CalcHealth()
+void ABaseCharacter::CalcHealth(float DamageDealt)
 {
-
-}
-
-void ABaseCharacter::Kill()
-{
+	Health -= DamageDealt;	// Take damage off health
+	
 	// If the character has no health left
 	if (Health <= 0)
 	{
-		// Ensure the rifle associated with this characer is also destroyed
-		if (SpawnedRifle != NULL)
-			SpawnedRifle->Destroy();
+		// Check the controller has not already been detached for whatever reason
+		if (Controller != NULL)
+			// Stop character from being able to move so the death animation can be played
+			DetachFromControllerPendingDestroy();
 
-		// Destroy the character
-		Destroy();
+		// We can now play the death animation
+		isDead = true;
+
+		if (!TimerHandle.IsValid())
+			// Destroy the character after a set interval
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &ABaseCharacter::DelayedDestroy, 3.0f, true);
 	}
+	else // If the character still has some health remaining
+	{
+		isDead = false;
+	}
+}
+
+void ABaseCharacter::DelayedDestroy()
+{
+	GetWorldTimerManager().ClearTimer(TimerHandle);
+	TimerHandle.Invalidate();
+
+	// Ensure the rifle associated with this characer is also destroyed
+	if (SpawnedRifle != NULL)
+		SpawnedRifle->Destroy();
+
+	// Destroy the character
+	Destroy();
+}
+
+void ABaseCharacter::DealDamage_Implementation(float Damage)
+{
+	CalcHealth(DealDamage(Damage));
 }

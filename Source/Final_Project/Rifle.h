@@ -13,7 +13,7 @@ class FINAL_PROJECT_API ARifle : public AActor
 public:
 	UPROPERTY(EditAnywhere)
 		class USkeletalMeshComponent* GunMesh;
-
+		
 	UPROPERTY(EditAnywhere)
 		class UArrowComponent* ArrowComp;
 

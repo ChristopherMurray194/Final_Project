@@ -3,7 +3,8 @@
 #include "Final_Project.h"
 #include "Projectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Engine.h"
+#include "IDamageable.h"
+#include "BaseCharacter.h"
 
 // Sets default values
 AProjectile::AProjectile()
@@ -57,14 +58,26 @@ void AProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	if (OtherActor->ActorHasTag(TEXT("Enemy")))
+	// Check the actor implements the IDamageable interface
+	if (OtherActor->GetClass()->ImplementsInterface(UIDamageable::StaticClass()))
 	{
-		// Destroy the projectile when we collide with an Agent
+		// If the actor is an enemy agent
+		if (OtherActor->ActorHasTag(TEXT("Enemy")))
+		{
+			/*
+			 * OtherActor is of BaseCharacter class type so create cast
+			 * So that we can access the class' functions 
+			 */
+			ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OtherActor);
+			// Deal damage to the base character
+			BaseCharacter->DealDamage_Implementation(20);
+		}
+		// Destroy the projectile when we collide
 		Destroy();
 	}
-	else // If we hit anything that isn't an enemy (including the player)
+	else // If we hit anything else that is overlapable
 	{
-		// Destroy the projectile when we collide
+		// Destroy the projectile
 		Destroy();
 	}
 }
