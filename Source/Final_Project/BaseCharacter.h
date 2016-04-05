@@ -88,7 +88,7 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		bool isFiring = false;
 
-	void Fire();
+	virtual void Fire();
 	void StopFiring();
 
 	UPROPERTY(BlueprintReadOnly)
@@ -135,7 +135,8 @@ public:
 	// Destroy the character after a set interval
 	void DelayedDestroy();
 
-public:
 	void DealDamage_Implementation(float Damage);
 	//==============================================//
+	
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 };

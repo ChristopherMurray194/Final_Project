@@ -9,6 +9,10 @@
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
+	// Set size for collision capsule
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;	// Set the default movement speed
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin"));
@@ -202,4 +206,16 @@ void ABaseCharacter::DelayedDestroy()
 void ABaseCharacter::DealDamage_Implementation(float Damage)
 {
 	CalcHealth(DealDamage(Damage));
+}
+
+void ABaseCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+	// If the object is coverable
+	if (OtherActor->ActorHasTag(TEXT("Coverable")))
+	{
+		FVector Origin, BoundsExtent;
+		OtherActor->GetActorBounds(false, Origin, BoundsExtent);
+
+	}
 }

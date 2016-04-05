@@ -10,8 +10,6 @@
 
 AFinal_ProjectCharacter::AFinal_ProjectCharacter()
 {
-	// Set size for collision capsule
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 	Tags.Add(TEXT("Player")); // This is the player, used to ensure player cannot damage self
 
 	// set our turn rates for input

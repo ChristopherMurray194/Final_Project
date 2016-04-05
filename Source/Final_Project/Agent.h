@@ -24,6 +24,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = Path)
 		class APathNode* PathNode;
 
+	// The component that defines the sight of the agent
+	UPROPERTY(EditAnywhere)
+		class UPawnSensingComponent* SensingComp;
+
+	// The OnSeePawn delegate function
+	UFUNCTION()
+		void OnSeePawn(APawn* OtherPawn);
+
 private:
 	// Colour of the enemy
 	FLinearColor EnemyColor = FLinearColor( (139.0f / 255.0f), (26.0f / 255.0f), (26.0f / 255.0f), 1.0f);

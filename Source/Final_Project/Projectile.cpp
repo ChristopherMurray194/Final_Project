@@ -61,13 +61,12 @@ void AProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 	// Check the actor implements the IDamageable interface
 	if (OtherActor->GetClass()->ImplementsInterface(UIDamageable::StaticClass()))
 	{
-		// If the actor is an enemy agent
 		if (OtherActor->ActorHasTag(TEXT("Enemy")))
 		{
 			/*
-			 * OtherActor is of BaseCharacter class type so create cast
-			 * So that we can access the class' functions 
-			 */
+			* OtherActor is of BaseCharacter class type so create cast
+			* So that we can access the class' functions
+			*/
 			ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OtherActor);
 			// Deal damage to the base character
 			BaseCharacter->DealDamage_Implementation(20);
