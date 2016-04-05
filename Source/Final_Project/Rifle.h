@@ -11,11 +11,8 @@ class FINAL_PROJECT_API ARifle : public AActor
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere)
-		class USkeletalMeshComponent* GunMesh;
-		
-	UPROPERTY(EditAnywhere)
-		class UArrowComponent* ArrowComp;
+	class USkeletalMeshComponent* GunMesh;
+	class UArrowComponent* ArrowComp;
 
 	// Sets default values for this actor's properties
 	ARifle();
@@ -39,7 +36,7 @@ public:
 	void SetAmmoCount(int Delta);
 
 	// ClipSize Accessor
-	int GetClipSize();
+	uint8 GetClipSize();
 	//=============================================//
 	
 private:
@@ -52,5 +49,5 @@ private:
 
 	int ClipSize = 30;
 	// Ammo per clip/magazine
-	int AmmoCount = ClipSize;
+	uint8 AmmoCount = ClipSize;
 };

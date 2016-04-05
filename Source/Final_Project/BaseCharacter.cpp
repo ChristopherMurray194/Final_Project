@@ -167,10 +167,10 @@ void ABaseCharacter::EndReload(){ isReloading = false; }
 
 void ABaseCharacter::CalcHealth(float DamageDealt)
 {
-	Health -= DamageDealt;	// Take damage off health
+	HealthWeight -= DamageDealt;	// Take damage off health
 	
 	// If the character has no health left
-	if (Health <= 0)
+	if (HealthWeight <= 0)
 	{
 		// Check the controller has not already been detached for whatever reason
 		if (Controller != NULL)

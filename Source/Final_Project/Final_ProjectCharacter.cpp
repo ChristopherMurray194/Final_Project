@@ -179,12 +179,12 @@ void AFinal_ProjectCharacter::Crouch()
 	in prone can stop reverting back to standing whilst in prone
 	*/
 	// First key press
-	if (!StopCrouching && !isProne)
+	if (!bStopCrouching && !isProne)
 		// Crouch
 		isCrouching = true;
 
 	// Second key press
-	if (StopCrouching && !isProne)
+	if (bStopCrouching && !isProne)
 		// UnCrouch
 		isCrouching = false;
 }
@@ -194,46 +194,46 @@ void AFinal_ProjectCharacter::UnCrouch()
 	// If we are crouching (first key press)
 	if (isCrouching)
 		// On the second key press we want to be able to stop crouching
-		StopCrouching = true;
+		bStopCrouching = true;
 
 	// If we are not crouching (second key press)
 	if (!isCrouching)
 		// On the next key press we want to be able to crouch
-		StopCrouching = false;
+		bStopCrouching = false;
 }
 
 void AFinal_ProjectCharacter::GoProne()
 {
 	// If we are already standing
-	if (!CanStand && !isCrouching)
+	if (!bCanStand && !isCrouching)
 	{
 		// Go prone
 		isProne = true;
 		// We want to be able to stand up
-		CanStand = true;
+		bCanStand = true;
 	}
-	else if(CanStand && !isCrouching)// If can stand up
+	else if(bCanStand && !isCrouching)// If can stand up
 	{
 		// Exit prone
 		isProne = false;
 		// Cannot stand because we are already standing
-		CanStand = false;
+		bCanStand = false;
 	}
 }
 
 void AFinal_ProjectCharacter::ToggleControllerYaw()
 {
 	// If using controller yaw
-	if (!UnlockYaw)
+	if (!bUnlockYaw)
 	{
 		// Do not use controller yaw
 		bUseControllerRotationYaw = false;
-		UnlockYaw = true;
+		bUnlockYaw = true;
 	}
-	else if (UnlockYaw) // If not using controller yaw
+	else if (bUnlockYaw) // If not using controller yaw
 	{
 		// Use controller yaw
 		bUseControllerRotationYaw = true;
-		UnlockYaw = false;
+		bUnlockYaw = false;
 	}
 }

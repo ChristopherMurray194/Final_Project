@@ -10,10 +10,8 @@ class FINAL_PROJECT_API AProjectile : public AActor
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
-		class USphereComponent* CollisionComp;
-	UPROPERTY(EditAnywhere)
-		class UStaticMeshComponent* SphereVisual;
+	class USphereComponent* CollisionComp;
+	class UStaticMeshComponent* SphereVisual;
 	
 public:	
 	// Sets default values for this actor's properties

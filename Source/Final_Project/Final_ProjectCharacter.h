@@ -33,7 +33,7 @@ private:
 
 	/* When Keyboard asterix key pressed twice, character does not use controller yaw */
 	void ToggleControllerYaw();
-	bool UnlockYaw = false;	// Toggle between controller yaw
+	bool bUnlockYaw = false;	// Toggle between controller yaw
 
 protected:
 
@@ -62,7 +62,7 @@ protected:
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
 	//============Crouching==============//
-	bool StopCrouching = false;
+	bool bStopCrouching = false;
 	
 	//**** If the editor crashes suddenly the overriding of these virtual functions may be the cause. ****//
 	void Crouch();
@@ -70,7 +70,7 @@ protected:
 	//===================================//
 
 	//============Prone==================//
-	bool CanStand = false;
+	bool bCanStand = false;
 
 	virtual void GoProne() override;
 	//===================================//

@@ -124,7 +124,7 @@ public:
 
 	// The health of the character
 	UPROPERTY(EditAnywhere, Category = "Health")
-		float Health = 100;
+		float HealthWeight = 100;
 
 	UPROPERTY(BlueprintReadOnly)
 		bool isDead = false;

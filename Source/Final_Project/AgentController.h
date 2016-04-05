@@ -23,7 +23,7 @@ public:
 	UPROPERTY(transient)
 		class UBehaviorTreeComponent* m_BehvaiourTreeComp;
 
-	virtual void Possess(class APawn* InPawn);	// Override function
+	virtual void Possess(class APawn* InPawn) override;	// Override function
 
 	/** Sets a Blackboard component */
 	void setTarget(const FName& targetKeyID, class APathNode* target);

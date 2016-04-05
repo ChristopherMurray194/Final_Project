@@ -123,4 +123,4 @@ int ARifle::CalculateAmmo()
 
 void ARifle::SetAmmoCount(int Delta){ AmmoCount = Delta; }
 
-int ARifle::GetClipSize(){ return ClipSize; }
+uint8 ARifle::GetClipSize(){ return ClipSize; }

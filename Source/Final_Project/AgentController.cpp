@@ -13,7 +13,6 @@ AAgentController::AAgentController()
 	m_BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));	
 	m_BehvaiourTreeComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviourTreeComponent"));
 
-	
 }
 
 void AAgentController::Possess(class APawn* InPawn)
