@@ -6,6 +6,7 @@
 #include "Perception/PawnSensingComponent.h"
 #include "Rifle.h"
 #include "Delegate.h"
+#include "Engine.h"
 
 // Sets default values
 AAgent::AAgent()
@@ -32,5 +33,5 @@ void AAgent::PostInitializeComponents()
 
 void AAgent::OnSeePawn(APawn* OtherPawn)
 {
-	
+	bPlayerSeen = true;
 }

@@ -28,6 +28,10 @@ public:
 	UPROPERTY(EditAnywhere)
 		class UPawnSensingComponent* SensingComp;
 
+	// Can the agent see the player
+	UPROPERTY(BlueprintReadOnly)
+		bool bPlayerSeen = false;
+
 	// The OnSeePawn delegate function
 	UFUNCTION()
 		void OnSeePawn(APawn* OtherPawn);

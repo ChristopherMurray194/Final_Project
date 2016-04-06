@@ -205,7 +205,15 @@ void ABaseCharacter::DelayedDestroy()
 
 void ABaseCharacter::DealDamage_Implementation(float Damage)
 {
+	bReceivedHit = true;
 	CalcHealth(DealDamage(Damage));
+
+	/*
+	static ConstructorHelpers::FClassFinder<UAnimationAsset> Hit_React_1(TEXT("/Game/AnimStarterPack/Hit_React_1"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> Hit_React_2(TEXT("/Game/AnimStarterPack/Hit_React_2"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> Hit_React_3(TEXT("/Game/AnimStarterPack/Hit_React_3"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> Hit_React_4(TEXT("/Game/AnimStarterPack/Hit_React_4"));
+	*/
 }
 
 void ABaseCharacter::NotifyActorBeginOverlap(AActor* OtherActor)

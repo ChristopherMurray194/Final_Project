@@ -129,12 +129,16 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		bool isDead = false;
 
+	UPROPERTY(BlueprintReadWrite)
+		bool bReceivedHit = false;
+
 	/* Calculate the health of the character */
 	void CalcHealth(float DamageDealt);
 	FTimerHandle TimerHandle;
 	// Destroy the character after a set interval
 	void DelayedDestroy();
 
+	/* Called when hit by a projectile */
 	void DealDamage_Implementation(float Damage);
 	//==============================================//
 	
