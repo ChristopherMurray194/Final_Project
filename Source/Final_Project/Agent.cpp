@@ -29,9 +29,29 @@ void AAgent::PostInitializeComponents()
 
 	if (SensingComp != NULL)
 		SensingComp->OnSeePawn.AddDynamic(this, &AAgent::OnSeePawn);
+	
 }
 
 void AAgent::OnSeePawn(APawn* OtherPawn)
 {
-	bPlayerSeen = true;
+	// Ensure the other actor is the player
+	if (OtherPawn->ActorHasTag(TEXT("Player")))
+	{
+		// Store the Player's location
+		PlayerLocation = OtherPawn->GetActorLocation();
+		
+		// Pass the location to the controller
+		AAgentController* Controller = Cast<AAgentController>(GetController());
+		Controller->SetPlayerLocation(PlayerLocation);
+
+		// Agent can see the Player
+		bPlayerSeen = true;
+	}
+	else
+	{
+		bPlayerSeen = false;
+	}
 }
+
+class APathNode* AAgent::GetPathNode() const { return PathNode; }
+FVector AAgent::GetPlayerLocation() const { return PlayerLocation; }

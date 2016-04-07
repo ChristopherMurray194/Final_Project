@@ -30,13 +30,21 @@ public:
 
 	//=================Ammo========================//
 	/** Calculate the remaining ammo */
-	int CalculateAmmo();
+	int32 CalculateAmmo();
 
 	// AmmoCount mutator
 	void SetAmmoCount(int Delta);
 
 	// ClipSize Accessor
-	uint8 GetClipSize();
+	int32 GetClipSize();
+
+	// Max ammo in one clip
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		int32 ClipSize = 30;
+
+	// Ammo per clip/magazine
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+		int32 AmmoCount = ClipSize;
 	//=============================================//
 	
 private:
@@ -47,7 +55,4 @@ private:
 	// Rounds per second
 	float RPS = 10.0f;
 
-	int ClipSize = 30;
-	// Ammo per clip/magazine
-	uint8 AmmoCount = ClipSize;
 };

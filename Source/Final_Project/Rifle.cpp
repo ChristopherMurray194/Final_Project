@@ -112,7 +112,7 @@ void ARifle::Fire()
 	}
 }
 
-int ARifle::CalculateAmmo()
+int32 ARifle::CalculateAmmo()
 {
 	// No Ammo
 	if (AmmoCount <= 0)
@@ -123,4 +123,4 @@ int ARifle::CalculateAmmo()
 
 void ARifle::SetAmmoCount(int Delta){ AmmoCount = Delta; }
 
-uint8 ARifle::GetClipSize(){ return ClipSize; }
+int32 ARifle::GetClipSize(){ return ClipSize; }

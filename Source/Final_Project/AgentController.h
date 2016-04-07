@@ -26,11 +26,18 @@ public:
 	virtual void Possess(class APawn* InPawn) override;	// Override function
 
 	/** Sets a Blackboard component */
-	void setTarget(const FName& targetKeyID, class APathNode* target);
+	void SetTarget(class APathNode* target);
 
 	/** This returns the target (that is the PathNode) blackboard component */
-	class APathNode* getTarget() const;
+	class APathNode* GetTarget() const;
+
+	/* Mutator method for PlayerLocation */
+	void SetPlayerLocation(FVector PlayerLocation);
+
+	/* Accessor method for PlayerLocation */
+	FVector GetPlayerLocation();
 
 protected:
-	FName m_TargetKeyID;	// First position in path
+	FName m_TargetKeyID;	// Next position in path
+	FName m_PlayerPosKeyID; // The location of the player
 };

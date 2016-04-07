@@ -4,6 +4,7 @@
 #include "Final_ProjectCharacter.h"
 #include "Animation/AnimInstance.h"
 #include "Engine.h"
+#include "Blueprint/UserWidget.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AFinal_ProjectCharacter
@@ -57,6 +58,23 @@ void AFinal_ProjectCharacter::PostInitializeComponents()
 	
 	// Set the Agent colour
 	GetMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), PlayerColor);
+}
+
+void AFinal_ProjectCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		if (HUD != NULL)
+		{
+			// Create the HUD widget
+			UUserWidget* Widget = CreateWidget<UUserWidget>(World, HUD);
+			// Display the HUD
+			Widget->AddToViewport();
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -83,6 +83,7 @@ public:
 	//===================Fire=======================//
 
 	// Spawned rifle
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapons, meta = (AllowPrivateAccess = "true"))
 	class ARifle* SpawnedRifle;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -123,7 +124,7 @@ public:
 	//===============Health System==================//
 
 	// The health of the character
-	UPROPERTY(EditAnywhere, Category = "Health")
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Health")
 		float HealthWeight = 100;
 
 	UPROPERTY(BlueprintReadOnly)

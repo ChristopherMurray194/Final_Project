@@ -22,7 +22,9 @@ public:
 
 	// If not set to value Editor may crash
 	UPROPERTY(EditAnywhere, Category = Path)
-		class APathNode* PathNode;
+	class APathNode* PathNode;
+	/* PathNode accessor */
+	class APathNode* GetPathNode() const;
 
 	// The component that defines the sight of the agent
 	UPROPERTY(EditAnywhere)
@@ -32,6 +34,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		bool bPlayerSeen = false;
 
+	/* PlayerLocation accessor */
+	FVector GetPlayerLocation() const;
+
 	// The OnSeePawn delegate function
 	UFUNCTION()
 		void OnSeePawn(APawn* OtherPawn);
@@ -39,4 +44,8 @@ public:
 private:
 	// Colour of the enemy
 	FLinearColor EnemyColor = FLinearColor( (139.0f / 255.0f), (26.0f / 255.0f), (26.0f / 255.0f), 1.0f);
+
+	// Store the location of the player
+	FVector PlayerLocation;
+
 };

@@ -79,8 +79,8 @@ EBTNodeResult::Type UPatrolTask::PerformMoveTask(UBehaviorTreeComponent& OwnerCo
 
 				if (NodeResult == EBTNodeResult::InProgress)
 				{
-					/* Causes crash - Cannot figure out why
-					regardless, task works without it. */
+					/* Causes crash - Cannot figure out why,
+					regardless task works without it. */
 					//AIMoveTask->ReadyForActivation();
 				}
 			}

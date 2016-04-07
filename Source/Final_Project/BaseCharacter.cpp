@@ -59,7 +59,10 @@ void ABaseCharacter::BeginPlay()
 		SpawnedRifle = World->SpawnActor<ARifle>(SpawnParams);
 
 		if (SpawnedRifle != NULL)
+		{
+			//SpawnedRifle->CreateDefaultSubobject<ARifle>(TEXT("Rifle"));
 			SpawnedRifle->AttachRootComponentTo(GetMesh(), TEXT("GunSocket"), EAttachLocation::SnapToTargetIncludingScale, true);
+		}
 	}
 }
 
