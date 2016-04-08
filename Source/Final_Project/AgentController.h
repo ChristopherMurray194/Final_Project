@@ -17,13 +17,15 @@ public:
 	AAgentController();
 
 	UPROPERTY(transient) // transient property - should not be saved
-		class UBlackboardComponent* m_BlackboardComp;
+		class UBlackboardComponent* BlackboardComp;
 
 	/** Custom BehaviourTreeComponent */
 	UPROPERTY(transient)
-		class UBehaviorTreeComponent* m_BehvaiourTreeComp;
+		class UBehaviorTreeComponent* BehvaiourTreeComp;
 
-	virtual void Possess(class APawn* InPawn) override;	// Override function
+
+	virtual void Tick(float DeltaSeconds) override;
+	virtual void Possess(class APawn* InPawn) override;
 
 	/** Sets a Blackboard component */
 	void SetTarget(class APathNode* target);
@@ -33,11 +35,24 @@ public:
 
 	/* Mutator method for PlayerLocation */
 	void SetPlayerLocation(FVector PlayerLocation);
-
 	/* Accessor method for PlayerLocation */
 	FVector GetPlayerLocation();
 
+	// Location of the agent which is possessed by this controller
+	FVector AgentLocation;
+	FVector GetAgentLocation();
+	// Get the agent's rotation
+	FRotator AgentRotation;
+	FRotator GetAgentRotation();
+
+	// Set rotation of the agent possessed by this controller
+	void SetActorRotation(FRotator NewRotation);
+
+
 protected:
-	FName m_TargetKeyID;	// Next position in path
-	FName m_PlayerPosKeyID; // The location of the player
+	uint8 TargetKeyID;	// Next position in path
+	uint8 PlayerPosKeyID; // The location of the player
+	
+	// Agent that is possessed by this controller
+	class AAgent* Agent;
 };

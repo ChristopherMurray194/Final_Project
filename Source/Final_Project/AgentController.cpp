@@ -10,49 +10,62 @@
 
 AAgentController::AAgentController()
 {
-	m_BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));	
-	m_BehvaiourTreeComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviourTreeComponent"));
+	BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComponent"));	
+	BehvaiourTreeComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BehaviourTreeComponent"));
+	
+}
 
+void AAgentController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	// Get the Agent's location
+	AgentLocation = Agent->GetActorLocation();
+	// Get the Agent's rotation
+	AgentRotation = Agent->GetActorRotation();
 }
 
 void AAgentController::Possess(class APawn* InPawn)
 {
 	Super::Possess(InPawn);
-	AAgent* agent = Cast<AAgent>(InPawn);
+	Agent = Cast<AAgent>(InPawn);
 
 	// Check there is an Agent, AgentBT and PathNode for the agent.
-	if (agent && agent->AgentBehaviourTree && agent->GetPathNode())
+	if (Agent && Agent->AgentBehaviourTree && Agent->GetPathNode())
 	{
 		// Get the blackboard asset linked to the Agent's behaviour tree
-		m_BlackboardComp->InitializeBlackboard(*(agent->AgentBehaviourTree->BlackboardAsset));
+		BlackboardComp->InitializeBlackboard(*(Agent->AgentBehaviourTree->BlackboardAsset));
 
-		// String name MUST corresond EXACTLY to name of key in Blackboard editor
-		m_TargetKeyID = FName("Target");	// Convert string to FName
-		// Sets the target point value in the blackboard
-		SetTarget(agent->GetPathNode());
+		if (BlackboardComp)
+		{
+			// String name MUST corresond EXACTLY to name of key in Blackboard editor
+			TargetKeyID = BlackboardComp->GetKeyID("Target");	// Convert string to FName
+			// Sets the target point value in the blackboard
+			SetTarget(Agent->GetPathNode());
 
-		m_PlayerPosKeyID = FName("PlayerLocation");
-		// Sets the location of the PlayerLocation value in the blackboard
-		SetPlayerLocation(agent->GetPlayerLocation());
+			PlayerPosKeyID = BlackboardComp->GetKeyID("PlayerLocation");
+			// Sets the location of the PlayerLocation value in the blackboard
+			SetPlayerLocation(Agent->GetPlayerLocation());
+		}
 
-		m_BehvaiourTreeComp->StartTree(*(agent->AgentBehaviourTree));
+		BehvaiourTreeComp->StartTree(*(Agent->AgentBehaviourTree));
 	}/* // Must be commented out when Launching. GetActorLabel function only avaialable in development builds
 	else // Handle errors
 	{
-		if (GEngine && !agent->AgentBehaviourTree)
+		if (GEngine && !Agent->AgentBehaviourTree)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,			// Key: Passing -1 means create new message. Not passing -1, means update message each tick - UE4 API
 											60.f,			// Display time (seconds)
 											FColor::Red,	// Color
-											FString::Printf(TEXT("There is no Behaviour Tree assigned to %s!"), *agent->GetActorLabel())	// Message to display
+											FString::Printf(TEXT("There is no Behaviour Tree assigned to %s!"), *Agent->GetActorLabel())	// Message to display
 											);
 		}
-		if (GEngine && !agent->PathNode)
+		if (GEngine && !Agent->PathNode)
 		{
 			GEngine->AddOnScreenDebugMessage(-1,
 											60.f, 
 											FColor::Red, 
-											FString::Printf(TEXT("There is no PathNode assigned to %s!"), *agent->GetActorLabel())
+											FString::Printf(TEXT("There is no PathNode assigned to %s!"), *Agent->GetActorLabel())
 											);
 		}
 	}*/
@@ -60,34 +73,38 @@ void AAgentController::Possess(class APawn* InPawn)
 
 void AAgentController::SetTarget(class APathNode* target)
 {
-	if (m_BlackboardComp)
+	if (BlackboardComp)
 	{
-		m_BlackboardComp->SetValueAsObject(m_TargetKeyID, target);
+		BlackboardComp->SetValueAsObject(TargetKeyID, target);
 	}
 }
 
 class APathNode* AAgentController::GetTarget() const
 {
-	if (m_BlackboardComp)
+	if (BlackboardComp)
 	{
-		return Cast<APathNode>(m_BlackboardComp->GetValueAsObject(m_TargetKeyID));
+		return Cast<APathNode>(BlackboardComp->GetValueAsObject(TargetKeyID));
 	}
 	return NULL;
 }
 
 void AAgentController::SetPlayerLocation(FVector PlayerLocation)
 {
-	if (m_BlackboardComp)
+	if (BlackboardComp)
 	{
-		m_BlackboardComp->SetValueAsVector(m_PlayerPosKeyID, PlayerLocation);
+		BlackboardComp->SetValueAsVector(PlayerPosKeyID, PlayerLocation);
 	}
 }
 
 FVector AAgentController::GetPlayerLocation()
 {
-	if (m_BlackboardComp)
+	if (BlackboardComp)
 	{
-		return m_BlackboardComp->GetValueAsVector(m_PlayerPosKeyID);
+		return BlackboardComp->GetValueAsVector(PlayerPosKeyID);
 	}
 	return FVector(0.0f, 0.0f, 0.0f);
 }
+
+void AAgentController::SetActorRotation(FRotator NewRotation){ Agent->SetActorRotation(NewRotation); }
+FVector AAgentController::GetAgentLocation(){ return AgentLocation; }
+FRotator AAgentController::GetAgentRotation(){ return AgentRotation; }
