@@ -46,6 +46,15 @@ void AAgentController::Possess(class APawn* InPawn)
 			PlayerPosKeyID = BlackboardComp->GetKeyID("PlayerLocation");
 			// Sets the location of the PlayerLocation value in the blackboard
 			SetPlayerLocation(Agent->GetPlayerLocation());
+
+			PlayerFoundKeyID = BlackboardComp->GetKeyID("PlayerFound");
+			// Set the boolean value of PlayerFound blackboard key
+			SetPlayerFound(Agent->GetPlayerSeen());
+
+			RandomLocationKeyID = BlackboardComp->GetKeyID("RandomLocation");
+
+			CanSearchKeyID = BlackboardComp->GetKeyID("CanSearch");
+			SetCanSearch(Agent->GetCanSearch());
 		}
 
 		BehvaiourTreeComp->StartTree(*(Agent->AgentBehaviourTree));
@@ -79,7 +88,7 @@ void AAgentController::SetTarget(class APathNode* target)
 	}
 }
 
-class APathNode* AAgentController::GetTarget() const
+APathNode* AAgentController::GetTarget() const
 {
 	if (BlackboardComp)
 	{
@@ -96,6 +105,22 @@ void AAgentController::SetPlayerLocation(FVector PlayerLocation)
 	}
 }
 
+void AAgentController::SetPlayerFound(bool PlayerFound)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsBool(PlayerFoundKeyID, PlayerFound);
+	}
+}
+
+void AAgentController::SetCanSearch(bool CanSearch)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsBool(CanSearchKeyID, CanSearch);
+	}
+}
+
 FVector AAgentController::GetPlayerLocation()
 {
 	if (BlackboardComp)
@@ -105,6 +130,24 @@ FVector AAgentController::GetPlayerLocation()
 	return FVector(0.0f, 0.0f, 0.0f);
 }
 
+void AAgentController::SetRandomLocation(FVector RandomLocation)
+{
+	if (BlackboardComp)
+	{
+		BlackboardComp->SetValueAsVector(RandomLocationKeyID, RandomLocation);
+	}
+}
+
+FVector AAgentController::GetRandomLocation()
+{
+	if (BlackboardComp)
+	{
+		return BlackboardComp->GetValueAsVector(RandomLocationKeyID);
+	}
+	return FVector(0.0f, 0.0f, 0.0f);
+}
+
 void AAgentController::SetActorRotation(FRotator NewRotation){ Agent->SetActorRotation(NewRotation); }
 FVector AAgentController::GetAgentLocation(){ return AgentLocation; }
 FRotator AAgentController::GetAgentRotation(){ return AgentRotation; }
+AAgent* AAgentController::GetAgentOwner()const { return Agent; }

@@ -6,6 +6,7 @@
 #include "BehaviorTree/BlackboardComponent.h" // Necessary for GET_AI_CONFIG_VAR
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "AgentController.h"
+#include "Rifle.h"
 #include "Agent.h"
 #include "Engine.h"
 
@@ -27,23 +28,21 @@ EBTNodeResult::Type UEngageTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 	}
 	else
 	{
-		// Get the PlayerLocation value currently held in the blackboard
-		FVector KeyValue = BlackboardComp->GetValue<UBlackboardKeyType_Vector>(BlackboardKey.GetSelectedKeyID());
-		// Store it locally
-		FVector PlayerLocation = KeyValue;
-		// Get the Agent's location
-		FVector AgentLocation = Controller->GetAgentLocation();
-		// Create new vector from Agent's location to Player's location
-		FVector AgentToPlayer = PlayerLocation - AgentLocation;
-		// Get the Agent's rotation
-		FRotator AgentRotation = Controller->GetAgentRotation();
-
-		UWorld* World = GetWorld();
-		if (World)
+		Agent = Controller->GetAgentOwner();
+		// If the agent's weapon has ammo in it
+		if (Agent->GetCurrentWeapon()->CalculateAmmo() > 0)
 		{
-			FRotator NewRotation = FMath::RInterpTo(AgentRotation, AgentToPlayer.Rotation(), World->GetDeltaSeconds(), 5.0f);
-			// Set the new actor rotation
-			Controller->SetActorRotation(NewRotation);
+			// Ensure reload is set to false because it should have been reloaded at this stage
+			Agent->EndReload();
+			// Shoot
+			Agent->Fire();
+		}
+		else
+		{
+			// Stop firing if firing
+			Agent->StopFiring();
+			// Reload
+			Agent->BeginReload();
 		}
 
 		return EBTNodeResult::Succeeded;

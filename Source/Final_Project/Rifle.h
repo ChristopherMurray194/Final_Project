@@ -29,9 +29,9 @@ public:
 	bool ReleaseTrigger();
 
 	//=================Ammo========================//
+
 	/** Calculate the remaining ammo */
 	int32 CalculateAmmo();
-
 	// AmmoCount mutator
 	void SetAmmoCount(int Delta);
 

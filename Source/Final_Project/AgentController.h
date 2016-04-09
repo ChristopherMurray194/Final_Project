@@ -26,6 +26,9 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 	virtual void Possess(class APawn* InPawn) override;
+	
+	// Get the Agent associated with this controller
+	class AAgent* GetAgentOwner() const;
 
 	/** Sets a Blackboard component */
 	void SetTarget(class APathNode* target);
@@ -38,6 +41,11 @@ public:
 	/* Accessor method for PlayerLocation */
 	FVector GetPlayerLocation();
 
+	/* Set PlayerFound Blackboard Key */
+	void SetPlayerFound(bool PlayerFound);
+	/* Set CanSearch Blackboard Key */
+	void SetCanSearch(bool CanSearch);
+
 	// Location of the agent which is possessed by this controller
 	FVector AgentLocation;
 	FVector GetAgentLocation();
@@ -48,10 +56,15 @@ public:
 	// Set rotation of the agent possessed by this controller
 	void SetActorRotation(FRotator NewRotation);
 
+	void SetRandomLocation(FVector RandomLocation);
+	FVector GetRandomLocation();
 
 protected:
-	uint8 TargetKeyID;	// Next position in path
-	uint8 PlayerPosKeyID; // The location of the player
+	uint8 TargetKeyID;			// Next position in path
+	uint8 PlayerPosKeyID;		// The location of the player
+	uint8 PlayerFoundKeyID;		// The agent can see the player
+	uint8 RandomLocationKeyID;	// A random location for the agent to move to
+	uint8 CanSearchKeyID;		// The agent can begin searching
 	
 	// Agent that is possessed by this controller
 	class AAgent* Agent;

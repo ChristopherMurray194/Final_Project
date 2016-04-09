@@ -86,6 +86,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapons, meta = (AllowPrivateAccess = "true"))
 	class ARifle* SpawnedRifle;
 
+	/* Get the current rifle the character is holding*/
+	class ARifle* GetCurrentWeapon();
+
 	UPROPERTY(BlueprintReadOnly)
 		bool isFiring = false;
 

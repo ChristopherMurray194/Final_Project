@@ -157,6 +157,8 @@ void ABaseCharacter::StopFiring()
 		isFiring = SpawnedRifle->ReleaseTrigger();
 }
 
+ARifle* ABaseCharacter::GetCurrentWeapon(){ return SpawnedRifle; }
+
 void ABaseCharacter::BeginReload()
 { 
 	isReloading = true; 
