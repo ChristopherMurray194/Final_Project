@@ -74,6 +74,13 @@ void ABaseCharacter::Tick( float DeltaTime )
 	Time = DeltaTime;
 	// Get the new rotation
 	DeltaRotator = GetControlRotation() - GetActorRotation();
+
+	// As a fail safe if the Fire() function is continuosly called,
+	// it will still fire while reloading, which we do not want to happen.
+	if (!CanFire)
+	{
+		StopFiring();
+	}
 }
 
 void ABaseCharacter::CustomRInterpTo(FRotator current, float Interp_Speed)
@@ -147,8 +154,11 @@ void ABaseCharacter::StopAiming()
 
 void ABaseCharacter::Fire()
 { 
-	if (SpawnedRifle != NULL)
-		isFiring = SpawnedRifle->PullTrigger();
+	if (CanFire)
+	{
+		if (SpawnedRifle != NULL)
+			isFiring = SpawnedRifle->PullTrigger();
+	}
 }
 
 void ABaseCharacter::StopFiring()
@@ -161,6 +171,7 @@ ARifle* ABaseCharacter::GetCurrentWeapon(){ return SpawnedRifle; }
 
 void ABaseCharacter::BeginReload()
 { 
+	CanFire = false;
 	isReloading = true; 
 	// Reload
 	if (SpawnedRifle != NULL)

@@ -92,6 +92,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		bool isFiring = false;
 
+	UPROPERTY(BlueprintReadWrite)
+		bool CanFire = true;
+
 	virtual void Fire();
 	void StopFiring();
 
