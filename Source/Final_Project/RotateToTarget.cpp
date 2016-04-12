@@ -42,8 +42,8 @@ EBTNodeResult::Type URotateToTarget::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 		if (World)
 		{
 			FRotator NewRotation = FMath::RInterpTo(AgentRotation, AgentToPlayer.Rotation(), World->GetDeltaSeconds(), 10.0f);
-			// Set the new actor rotation
-			Controller->SetActorRotation(NewRotation);
+			// Set the new controller rotation which drives the Agent.
+			Controller->SetControlRotation(NewRotation);
 		}
 
 		return EBTNodeResult::Succeeded;

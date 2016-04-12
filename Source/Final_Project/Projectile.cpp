@@ -66,8 +66,16 @@ void AProjectile::NotifyActorBeginOverlap(AActor* OtherActor)
 		* So that we can access the class' functions
 		*/
 		ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OtherActor);
-		// Deal damage to the base character
-		BaseCharacter->DealDamage_Implementation(20);
+		if (BaseCharacter->ActorHasTag("Player"))
+		{
+			// Do less damage to the player
+			BaseCharacter->DealDamage_Implementation(0.5f);
+		}
+		else
+		{
+			// Deal damage to the base character i.e. Agent
+			BaseCharacter->DealDamage_Implementation(20.0f);
+		}
 
 		// Destroy the projectile when we collide
 		Destroy();

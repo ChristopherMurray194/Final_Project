@@ -4,7 +4,8 @@
 #include "Agent.h"
 #include "AgentController.h"
 #include "Final_ProjectCharacter.h"
-#include "Perception/PawnSensingComponent.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
 #include "Rifle.h"
 #include "Delegate.h"
 #include "Engine.h"
@@ -16,9 +17,21 @@ AAgent::AAgent()
 	AIControllerClass = AAgentController::StaticClass();
 	Tags.Add(TEXT("Enemy"));
 
-	SensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("Agent_Sight"));
-	SensingComp->SightRadius = 1055.0f;
-	SensingComp->SetPeripheralVisionAngle(64.0f);
+	SensingComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Agent_Perception"));
+	SightComp = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight_Configuration"));
+	SensingComp->SetDominantSense(SightComp->GetSenseImplementation());
+	SensingComp->OnPerceptionUpdated.AddDynamic(this, &AAgent::SensePawn);
+
+	float SightRadiusWeight = 200.0f;
+	SightComp->SightRadius = SightRadiusWeight;
+	// How far until a sensed pawn is out of range (can no longer be seen).
+	SightComp->LoseSightRadius = SightRadiusWeight + 15;
+	// FOV angle
+	SightComp->PeripheralVisionAngleDegrees = 64.0f;
+	SightComp->DetectionByAffiliation.bDetectEnemies = true;
+	SightComp->DetectionByAffiliation.bDetectNeutrals = true;
+	SightComp->DetectionByAffiliation.bDetectFriendlies = true;
+	SensingComp->ConfigureSense(*SightComp);
 }
 
 void AAgent::PostInitializeComponents()
@@ -27,9 +40,6 @@ void AAgent::PostInitializeComponents()
 	
 	// Set the Agent colour
 	GetMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), EnemyColor);
-
-	if (SensingComp != NULL)
-		SensingComp->OnSeePawn.AddDynamic(this, &AAgent::OnSeePawn);
 	
 }
 
@@ -49,6 +59,8 @@ void AAgent::Tick(float DeltaSeconds)
 				// Reset the player has seen blackboard key so that the Agent can begin searching.
 				bPlayerSeen = false;
 				Controller->SetPlayerFound(bPlayerSeen);
+				// Clear the focus on the player
+				Controller->ClearFocus(EAIFocusPriority::Gameplay);
 				bCanSearch = true;
 				Controller->SetCanSearch(bCanSearch);
 				BeginSearch();
@@ -68,30 +80,28 @@ void AAgent::Tick(float DeltaSeconds)
 	}
 }
 
-void AAgent::OnSeePawn(APawn* OtherPawn)
+void AAgent::SensePawn(TArray<AActor*> OtherPawn)
 {
-	
-	// Ensure the other actor is the player
-	if (OtherPawn->ActorHasTag(TEXT("Player")))
+	UWorld* World = GetWorld();
+	if (World)
 	{
-		UWorld* World = GetWorld();
-		if (World)
-		{
-			LastSeenTime = World->GetTimeSeconds();
-		}
+		LastSeenTime = World->GetTimeSeconds();
+	}
+	// For each sensed Actor
+	for (AActor* SensedActor : OtherPawn)
+	{
 		// Store the Player's location
-		PlayerLocation = OtherPawn->GetActorLocation();
-		
+		PlayerLocation = SensedActor->GetActorLocation();
+
 		// Pass the location to the controller
 		AAgentController* Controller = Cast<AAgentController>(GetController());
-		Controller->SetPlayerLocation(PlayerLocation);
+		// Focus on the player's location
+		Controller->SetFocus(SensedActor, EAIFocusPriority::Gameplay);
+		// Set the player location as this focal point
+		Controller->SetPlayerLocation(Controller->GetFocalPointOnActor(SensedActor));
 		// Agent can see the Player
 		bPlayerSeen = true;
 		Controller->SetPlayerFound(bPlayerSeen);
-	}
-	else
-	{
-		bPlayerSeen = false;
 	}
 }
 

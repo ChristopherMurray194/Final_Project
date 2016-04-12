@@ -5,6 +5,8 @@
 #include "Animation/AnimInstance.h"
 #include "Engine.h"
 #include "Blueprint/UserWidget.h"
+#include "Perception/AISense_Sight.h"
+#include "Agent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AFinal_ProjectCharacter
@@ -75,6 +77,9 @@ void AFinal_ProjectCharacter::BeginPlay()
 			Widget->AddToViewport();
 		}
 	}
+
+	// Player can be seen by AI
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(), this);
 }
 
 //////////////////////////////////////////////////////////////////////////

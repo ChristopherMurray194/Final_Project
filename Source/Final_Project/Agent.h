@@ -30,7 +30,10 @@ public:
 
 	// The component that defines the sight of the agent
 	UPROPERTY(EditAnywhere)
-		class UPawnSensingComponent* SensingComp;
+		class UAIPerceptionComponent* SensingComp;
+	
+	// Sight sensing configuration
+	class UAISenseConfig_Sight* SightComp;
 
 	// Can the agent see the player
 	UPROPERTY(BlueprintReadOnly)
@@ -40,9 +43,9 @@ public:
 	/* PlayerLocation accessor */
 	FVector GetPlayerLocation() const;
 
-	// The OnSeePawn delegate function
+	// Delegate function
 	UFUNCTION()
-		void OnSeePawn(APawn* OtherPawn);
+		void SensePawn(TArray<AActor*> OtherPawn);
 
 	// Can the Agent begin searching?
 	UPROPERTY(BlueprintReadOnly)
