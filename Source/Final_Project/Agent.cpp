@@ -90,18 +90,25 @@ void AAgent::SensePawn(TArray<AActor*> OtherPawn)
 	// For each sensed Actor
 	for (AActor* SensedActor : OtherPawn)
 	{
-		// Store the Player's location
-		PlayerLocation = SensedActor->GetActorLocation();
+		// Make sure it is the Player we are sensing and not other agents
+		if ( (SensedActor != NULL) && (SensedActor->ActorHasTag("Player")) )
+		{
+			// Store the Player's location
+			PlayerLocation = SensedActor->GetActorLocation();
 
-		// Pass the location to the controller
-		AAgentController* Controller = Cast<AAgentController>(GetController());
-		// Focus on the player's location
-		Controller->SetFocus(SensedActor, EAIFocusPriority::Gameplay);
-		// Set the player location as this focal point
-		Controller->SetPlayerLocation(Controller->GetFocalPointOnActor(SensedActor));
-		// Agent can see the Player
-		bPlayerSeen = true;
-		Controller->SetPlayerFound(bPlayerSeen);
+			// Pass the location to the controller
+			AAgentController* Controller = Cast<AAgentController>(GetController());
+			if (Controller != NULL)
+			{
+				// Focus on the player's location
+				Controller->SetFocus(SensedActor, EAIFocusPriority::Gameplay);
+				// Set the player location as this focal point
+				Controller->SetPlayerLocation(Controller->GetFocalPointOnActor(SensedActor));
+				// Agent can see the Player
+				bPlayerSeen = true;
+				Controller->SetPlayerFound(bPlayerSeen);
+			}
+		}
 	}
 }
 
