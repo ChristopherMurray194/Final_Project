@@ -224,13 +224,10 @@ void ABaseCharacter::DelayedDestroy()
 
 void ABaseCharacter::DealDamage_Implementation(float Damage)
 {
-	bReceivedHit = true;
+	/* If we have not already been hit. Otherwise the hit animation will 
+	play for as many times as we have been hit. but if we're already playing 
+	the animation we do not want to play it again because it will interrupt other events. */
+	if (!bReceivedHit)
+		bReceivedHit = true;
 	CalcHealth(DealDamage(Damage));
-
-	/*
-	static ConstructorHelpers::FClassFinder<UAnimationAsset> Hit_React_1(TEXT("/Game/AnimStarterPack/Hit_React_1"));
-	static ConstructorHelpers::FClassFinder<UAnimInstance> Hit_React_2(TEXT("/Game/AnimStarterPack/Hit_React_2"));
-	static ConstructorHelpers::FClassFinder<UAnimInstance> Hit_React_3(TEXT("/Game/AnimStarterPack/Hit_React_3"));
-	static ConstructorHelpers::FClassFinder<UAnimInstance> Hit_React_4(TEXT("/Game/AnimStarterPack/Hit_React_4"));
-	*/
 }

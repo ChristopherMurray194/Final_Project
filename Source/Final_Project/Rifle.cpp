@@ -53,20 +53,22 @@ void ARifle::TraceLine(FHitResult* Hit)
 	// Distance of line trace
 	const float Scalar = 4000.0f;
 	// End point of the line trace
-	const FVector End = Start + Direction * Scalar;
+	FVector End = Start + Direction * Scalar;
 
 	// Name of the line trace
 	static FName TraceIdentifier = FName(TEXT("Weapon_Trace"));
 	// Default trace params
-	FCollisionQueryParams TraceParams(TraceIdentifier, true, this);
+	FCollisionQueryParams TraceParams(TraceIdentifier, false, this);
 	TraceParams.bTraceAsyncScene = true;
-
+	
 	// Create the line trace
 	UWorld* World = GetWorld();
 	if (World)
+	{
 		World->LineTraceSingle(*Hit, Start, End, ECollisionChannel::ECC_Visibility, TraceParams);
-	// Visualise the line trace
-	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1, 0, 2.0f);
+		// Visualise the line trace
+		DrawDebugLine(World, Start, End, FColor::Red, false, -1, 0, 2.0f);
+	}
 }
 
 bool ARifle::PullTrigger()
