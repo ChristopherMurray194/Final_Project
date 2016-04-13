@@ -4,6 +4,8 @@
 #include "Rifle.h"
 #include "Components/ArrowComponent.h"
 #include "Projectile.h"
+#include "IDamageable.h"
+#include "BaseCharacter.h"
 
 // Sets default values
 ARifle::ARifle()
@@ -35,18 +37,36 @@ ARifle::ARifle()
 	}
 }
 
-// Called when the game starts or when spawned
-void ARifle::BeginPlay()
+void ARifle::TraceLine(FHitResult* Hit)
 {
-	Super::BeginPlay();
-	
-}
+	// Get the location of the arrow component
+	FVector Loc = ArrowComp->GetComponentLocation();
+	// Get the rotation of the arrow component
+	FRotator Rot = ArrowComp->GetComponentRotation();
+	// The direction is equal to the rotation
+	FVector Direction = Rot.Vector();
 
-// Called every frame
-void ARifle::Tick( float DeltaTime )
-{
-	Super::Tick( DeltaTime );
+	// Starting point of line trace
+	FVector Start = FVector(0.0f, 0.0f, 0.0f);
+	Start = Loc + Direction;
 
+	// Distance of line trace
+	const float Scalar = 4000.0f;
+	// End point of the line trace
+	const FVector End = Start + Direction * Scalar;
+
+	// Name of the line trace
+	static FName TraceIdentifier = FName(TEXT("Weapon_Trace"));
+	// Default trace params
+	FCollisionQueryParams TraceParams(TraceIdentifier, true, this);
+	TraceParams.bTraceAsyncScene = true;
+
+	// Create the line trace
+	UWorld* World = GetWorld();
+	if (World)
+		World->LineTraceSingle(*Hit, Start, End, ECollisionChannel::ECC_Visibility, TraceParams);
+	// Visualise the line trace
+	DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, -1, 0, 2.0f);
 }
 
 bool ARifle::PullTrigger()
@@ -85,30 +105,35 @@ void ARifle::Fire()
 	// Can only fire if there is available ammo
 	if (CalculateAmmo() > 0)
 	{
-		UWorld* const World = GetWorld();
-		if (World)
-		{
-			// Required by SpawnActor function
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			SpawnParams.Instigator = Instigator;
-			// Get the Location of the Arrow component which defines the gun muzzle location
-			FVector SpawnLocation = ArrowComp->GetComponentTransform().GetLocation();
-			// Get the Rotation of the Arrow component which defines the gun muzzle location
-			FRotator SpawnRotation = (FRotator)ArrowComp->GetComponentTransform().GetRotation();
+		FHitResult Hit(ForceInit);
+		// Fire a single line trace
+		TraceLine(&Hit);
 
-			// Spawn a Projectile object
-			AProjectile* const SpawnedProjectile = World->SpawnActor<AProjectile>(
-				SpawnLocation,	// Location to the Arrow
-				SpawnRotation,	// Rotation of the Arrow
-				SpawnParams		// Spawn Paramaters
-				);
-			if (SpawnedProjectile != NULL)
+		// If the line trace hits an actor, store it.
+		AActor* Other = Hit.GetActor();
+		if (Other != NULL)
+		{
+			// Check the actor implements the IDamageable interface
+			if (Other->GetClass()->ImplementsInterface(UIDamageable::StaticClass()))
 			{
-				// Projectile is spawned, decrement AmmoCount
-				AmmoCount--;
+				/*
+				* OtherActor is of BaseCharacter class type so create cast
+				* So that we can access the class' functions
+				*/
+				ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(Other);
+				if (BaseCharacter->ActorHasTag("Player"))
+				{
+					// Do less damage to the player
+					BaseCharacter->DealDamage_Implementation(0.5f);
+				}
+				else
+				{
+					// Deal damage to the base character i.e. Agent
+					BaseCharacter->DealDamage_Implementation(20.0f);
+				}
 			}
 		}
+		AmmoCount--;
 	}
 }
 

@@ -148,6 +148,4 @@ public:
 	/* Called when hit by a projectile */
 	void DealDamage_Implementation(float Damage);
 	//==============================================//
-	
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 };

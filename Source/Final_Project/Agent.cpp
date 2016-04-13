@@ -95,7 +95,7 @@ void AAgent::SensePawn(TArray<AActor*> OtherPawn)
 		{
 			// Store the Player's location
 			PlayerLocation = SensedActor->GetActorLocation();
-
+			
 			// Pass the location to the controller
 			AAgentController* Controller = Cast<AAgentController>(GetController());
 			if (Controller != NULL)

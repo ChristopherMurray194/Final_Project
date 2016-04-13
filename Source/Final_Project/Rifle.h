@@ -17,11 +17,7 @@ public:
 	// Sets default values for this actor's properties
 	ARifle();
 
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
-	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
+	void TraceLine(FHitResult* Hit);
 
 	// Called when the fire key is pressed
 	bool PullTrigger();

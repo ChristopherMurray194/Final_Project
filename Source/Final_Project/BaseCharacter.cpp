@@ -5,6 +5,7 @@
 #include "Rifle.h"
 #include "Animation/AnimInstance.h"
 #include "Engine.h"
+#include "Delegate.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -22,8 +23,9 @@ ABaseCharacter::ABaseCharacter()
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -97.0f));
 		GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
-		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// Set non collidable
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);	// Set collidable
 		GetMesh()->bGenerateOverlapEvents = true; // Allow other actors to overlap
+		GetMesh()->SetNotifyRigidBodyCollision(true); // Set 'Simulation Generates Hit Events' true so the trace line can collide
 
 		// Set the animation blueprint to be used
 		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationAsset(TEXT("/Game/AnimStarterPack/UE4ASP_HeroTPP_AnimBlueprint"));
@@ -230,16 +232,4 @@ void ABaseCharacter::DealDamage_Implementation(float Damage)
 	static ConstructorHelpers::FClassFinder<UAnimInstance> Hit_React_3(TEXT("/Game/AnimStarterPack/Hit_React_3"));
 	static ConstructorHelpers::FClassFinder<UAnimInstance> Hit_React_4(TEXT("/Game/AnimStarterPack/Hit_React_4"));
 	*/
-}
-
-void ABaseCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
-{
-	Super::NotifyActorBeginOverlap(OtherActor);
-	// If the object is coverable
-	if (OtherActor->ActorHasTag(TEXT("Coverable")))
-	{
-		FVector Origin, BoundsExtent;
-		OtherActor->GetActorBounds(false, Origin, BoundsExtent);
-
-	}
 }
