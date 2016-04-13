@@ -44,7 +44,7 @@ void ARifle::TraceLine(FHitResult* Hit)
 	// Get the rotation of the arrow component
 	FRotator Rot = ArrowComp->GetComponentRotation();
 	// The direction is equal to the rotation
-	FVector Direction = Rot.Vector();
+	FVector Direction = ArrowComp->GetForwardVector();
 
 	// Starting point of line trace
 	FVector Start = FVector(0.0f, 0.0f, 0.0f);

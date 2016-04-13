@@ -22,10 +22,10 @@ AAgent::AAgent()
 	SensingComp->SetDominantSense(SightComp->GetSenseImplementation());
 	SensingComp->OnPerceptionUpdated.AddDynamic(this, &AAgent::SensePawn);
 
-	float SightRadiusWeight = 200.0f;
+	float SightRadiusWeight = 1000.0f;
 	SightComp->SightRadius = SightRadiusWeight;
 	// How far until a sensed pawn is out of range (can no longer be seen).
-	SightComp->LoseSightRadius = SightRadiusWeight + 15;
+	//SightComp->LoseSightRadius = SightRadiusWeight + 15;
 	// FOV angle
 	SightComp->PeripheralVisionAngleDegrees = 64.0f;
 	SightComp->DetectionByAffiliation.bDetectEnemies = true;

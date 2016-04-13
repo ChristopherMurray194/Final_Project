@@ -24,6 +24,7 @@ ABaseCharacter::ABaseCharacter()
 		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -97.0f));
 		GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
 		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);	// Set collidable
+		GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility,ECollisionResponse::ECR_Block); // Set the visibility channel to block
 		GetMesh()->bGenerateOverlapEvents = true; // Allow other actors to overlap
 		GetMesh()->SetNotifyRigidBodyCollision(true); // Set 'Simulation Generates Hit Events' true so the trace line can collide
 
