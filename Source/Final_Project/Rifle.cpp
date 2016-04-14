@@ -65,7 +65,7 @@ void ARifle::TraceLine(FHitResult* Hit)
 	UWorld* World = GetWorld();
 	if (World)
 	{
-		World->LineTraceSingle(*Hit, Start, End, ECollisionChannel::ECC_Visibility, TraceParams);
+		World->LineTraceSingleByChannel(*Hit, Start, End, ECollisionChannel::ECC_Visibility, TraceParams, FCollisionResponseParams::DefaultResponseParam);
 		// Visualise the line trace
 		DrawDebugLine(World, Start, End, FColor::Red, false, -1, 0, 2.0f);
 	}

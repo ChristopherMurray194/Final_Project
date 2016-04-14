@@ -40,9 +40,6 @@ public:
 		bool bPlayerSeen = false;
 	bool GetPlayerSeen() const;
 
-	/* PlayerLocation accessor */
-	FVector GetPlayerLocation() const;
-
 	// Delegate function
 	UFUNCTION()
 		void SensePawn(TArray<AActor*> OtherPawn);
@@ -52,14 +49,9 @@ public:
 		bool bCanSearch = false;
 	bool GetCanSearch() const;
 
-	void BeginSearch();
-
 private:
 	// Colour of the enemy
 	FLinearColor EnemyColor = FLinearColor( (139.0f / 255.0f), (26.0f / 255.0f), (26.0f / 255.0f), 1.0f);
-
-	// Store the location of the player
-	FVector PlayerLocation;
 
 	float LastSeenTime = 0.0f;
 	/* Agent has lost sight of player if the player's location

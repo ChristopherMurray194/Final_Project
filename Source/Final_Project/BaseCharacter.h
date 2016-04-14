@@ -26,6 +26,7 @@ public:
 
 	// Current tick time
 	UPROPERTY(BlueprintReadOnly)
+		// Current tick time
 		float Time;
 
 	// Called to bind functionality to input

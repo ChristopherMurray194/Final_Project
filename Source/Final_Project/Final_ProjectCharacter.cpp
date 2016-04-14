@@ -255,7 +255,7 @@ void AFinal_ProjectCharacter::ToggleControllerYaw()
 	}
 	else if (bUnlockYaw) // If not using controller yaw
 	{
-		// Use controller yaw
+		// Give rotation control back to the controller.
 		bUseControllerRotationYaw = true;
 		bUnlockYaw = false;
 	}

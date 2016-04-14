@@ -19,19 +19,18 @@ AAgent::AAgent()
 
 	SensingComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Agent_Perception"));
 	SightComp = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight_Configuration"));
-	SensingComp->SetDominantSense(SightComp->GetSenseImplementation());
-	SensingComp->OnPerceptionUpdated.AddDynamic(this, &AAgent::SensePawn);
-
-	float SightRadiusWeight = 1000.0f;
+	float SightRadiusWeight = 512.0f;
 	SightComp->SightRadius = SightRadiusWeight;
 	// How far until a sensed pawn is out of range (can no longer be seen).
-	//SightComp->LoseSightRadius = SightRadiusWeight + 15;
+	SightComp->LoseSightRadius = 3500.0;
 	// FOV angle
-	SightComp->PeripheralVisionAngleDegrees = 64.0f;
+	SightComp->PeripheralVisionAngleDegrees = 130.0f;
 	SightComp->DetectionByAffiliation.bDetectEnemies = true;
 	SightComp->DetectionByAffiliation.bDetectNeutrals = true;
 	SightComp->DetectionByAffiliation.bDetectFriendlies = true;
 	SensingComp->ConfigureSense(*SightComp);
+	SensingComp->SetDominantSense(SightComp->GetSenseImplementation());
+	SensingComp->OnPerceptionUpdated.AddDynamic(this, &AAgent::SensePawn);
 }
 
 void AAgent::PostInitializeComponents()
@@ -47,33 +46,50 @@ void AAgent::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	// If the player has been spotted AND the TimeTillPawnLost has elapsed since then
-	UWorld* World = GetWorld();
-	if (World)
+	if (bPlayerSeen)
 	{
-		if (bPlayerSeen && !bCanSearch && (World->GetTimeSeconds() - LastSeenTime) > TimeTillPawnLost)
+		// Get the location of the agent
+		FVector AgentLocation = GetActorLocation();
+		// Get the direction the agent is facing
+		FVector Direction = GetActorForwardVector();
+		// Default trace params
+		FCollisionQueryParams TraceParams(TEXT("LineOfSight_Trace"), false, this);
+		TraceParams.bTraceAsyncScene = true;
+
+		//=====Draw line trace from agent to player=====//
+		FHitResult Hit(ForceInit);
+		UWorld* World = GetWorld();
+
+		AAgentController* Controller = Cast<AAgentController>(GetController());
+		if (Controller != NULL)
 		{
+			World->LineTraceSingleByChannel(Hit, AgentLocation + Direction, Controller->GetFocalPoint(), ECollisionChannel::ECC_Visibility, TraceParams, FCollisionResponseParams::DefaultResponseParam);
+			DrawDebugLine(World, AgentLocation + Direction, Controller->GetFocalPoint(), FColor::Yellow, false, -1, 0, 2.0f);
+		}
+		//==============================================//
+
+		if (Hit.GetActor()->ActorHasTag("Player"))
+		{ 
+		}
+		/* Otherwise we can assume the actor intersecting the line trace is blocking the line of sight
+		from the agent to the player */
+		else{
 			AAgentController* Controller = Cast<AAgentController>(GetController());
 			if (Controller != NULL)
 			{
-				// Reset the player has seen blackboard key so that the Agent can begin searching.
+				/* The focal point is currently on the player actor. Set the PlayerLocation blackboard key
+				to the location of this focal point, so that when the agent moves into the Search behaviour
+				it will move to the actual location of the player when the agent lost LoS as opposed to the last
+				location it sensed the player at.
+				*/
+				Controller->SetPlayerLocation(Controller->GetFocalPoint());
+				// LoS to player is blocked
 				bPlayerSeen = false;
+				// Reset the player has seen blackboard key so that the Agent can begin searching.
 				Controller->SetPlayerFound(bPlayerSeen);
 				// Clear the focus on the player
 				Controller->ClearFocus(EAIFocusPriority::Gameplay);
 				bCanSearch = true;
-				Controller->SetCanSearch(bCanSearch);
-				BeginSearch();
-			}
-		}
-
-		if (!bPlayerSeen && bCanSearch && (World->GetTimeSeconds() - SearchStartTime) > SearchTime)
-		{
-			AAgentController* Controller = Cast<AAgentController>(GetController());
-			if (Controller != NULL)
-			{
-				// Stop searching
-				bCanSearch = false;
 				Controller->SetCanSearch(bCanSearch);
 			}
 		}
@@ -82,20 +98,13 @@ void AAgent::Tick(float DeltaSeconds)
 
 void AAgent::SensePawn(TArray<AActor*> OtherPawn)
 {
-	UWorld* World = GetWorld();
-	if (World)
-	{
-		LastSeenTime = World->GetTimeSeconds();
-	}
 	// For each sensed Actor
 	for (AActor* SensedActor : OtherPawn)
 	{
 		// Make sure it is the Player we are sensing and not other agents
 		if ( (SensedActor != NULL) && (SensedActor->ActorHasTag("Player")) )
 		{
-			// Store the Player's location
-			PlayerLocation = SensedActor->GetActorLocation();
-			
+			//===============Line Trace setup================//
 			// Pass the location to the controller
 			AAgentController* Controller = Cast<AAgentController>(GetController());
 			if (Controller != NULL)
@@ -112,25 +121,6 @@ void AAgent::SensePawn(TArray<AActor*> OtherPawn)
 	}
 }
 
-void AAgent::BeginSearch()
-{
-	if (bCanSearch)
-	{
-		UWorld* World = GetWorld();
-		if (World)
-		{
-			// Get the time the search is started
-			SearchStartTime = World->GetTimeSeconds();
-		}
-		AAgentController* Controller = Cast<AAgentController>(GetController());
-		// Get a random location
-		FVector RandVec = FMath::VRand();
-		// Set the RandomLocation BlackboardKey
-		Controller->SetRandomLocation(RandVec);
-	}
-}
-
 class APathNode* AAgent::GetPathNode() const { return PathNode; }
-FVector AAgent::GetPlayerLocation() const { return PlayerLocation; }
 bool AAgent::GetPlayerSeen() const { return bPlayerSeen; }
 bool AAgent::GetCanSearch() const { return bCanSearch; }

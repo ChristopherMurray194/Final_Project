@@ -44,8 +44,6 @@ void AAgentController::Possess(class APawn* InPawn)
 			SetTarget(Agent->GetPathNode());
 
 			PlayerPosKeyID = BlackboardComp->GetKeyID("PlayerLocation");
-			// Sets the location of the PlayerLocation value in the blackboard
-			SetPlayerLocation(Agent->GetPlayerLocation());
 
 			PlayerFoundKeyID = BlackboardComp->GetKeyID("PlayerFound");
 			// Set the boolean value of PlayerFound blackboard key
@@ -97,6 +95,15 @@ APathNode* AAgentController::GetTarget() const
 	return NULL;
 }
 
+FVector AAgentController::GetPlayerLocation()
+{
+	if (BlackboardComp)
+	{
+		return BlackboardComp->GetValueAsVector(PlayerPosKeyID);
+	}
+	return FVector(0.0f, 0.0f, 0.0f);
+}
+
 void AAgentController::SetPlayerLocation(FVector PlayerLocation)
 {
 	if (BlackboardComp)
@@ -119,15 +126,6 @@ void AAgentController::SetCanSearch(bool CanSearch)
 	{
 		BlackboardComp->SetValueAsBool(CanSearchKeyID, CanSearch);
 	}
-}
-
-FVector AAgentController::GetPlayerLocation()
-{
-	if (BlackboardComp)
-	{
-		return BlackboardComp->GetValueAsVector(PlayerPosKeyID);
-	}
-	return FVector(0.0f, 0.0f, 0.0f);
 }
 
 void AAgentController::SetRandomLocation(FVector RandomLocation)
