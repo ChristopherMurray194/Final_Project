@@ -46,7 +46,8 @@ void AAgent::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (bPlayerSeen)
+	AAgentController* Controller = Cast<AAgentController>(GetController());
+	if (bPlayerSeen && Controller != NULL)  
 	{
 		// Get the location of the agent
 		FVector AgentLocation = GetActorLocation();
@@ -60,12 +61,8 @@ void AAgent::Tick(float DeltaSeconds)
 		FHitResult Hit(ForceInit);
 		UWorld* World = GetWorld();
 
-		AAgentController* Controller = Cast<AAgentController>(GetController());
-		if (Controller != NULL)
-		{
-			World->LineTraceSingleByChannel(Hit, AgentLocation + Direction, Controller->GetFocalPoint(), ECollisionChannel::ECC_Visibility, TraceParams, FCollisionResponseParams::DefaultResponseParam);
-			DrawDebugLine(World, AgentLocation + Direction, Controller->GetFocalPoint(), FColor::Yellow, false, -1, 0, 2.0f);
-		}
+		World->LineTraceSingleByChannel(Hit, AgentLocation + Direction, Controller->GetFocalPoint(), ECollisionChannel::ECC_Visibility, TraceParams, FCollisionResponseParams::DefaultResponseParam);
+		DrawDebugLine(World, AgentLocation + Direction, Controller->GetFocalPoint(), FColor::Yellow, false, -1, 0, 2.0f);
 		//==============================================//
 
 		if (Hit.GetActor()->ActorHasTag("Player"))
@@ -74,24 +71,20 @@ void AAgent::Tick(float DeltaSeconds)
 		/* Otherwise we can assume the actor intersecting the line trace is blocking the line of sight
 		from the agent to the player */
 		else{
-			AAgentController* Controller = Cast<AAgentController>(GetController());
-			if (Controller != NULL)
-			{
-				/* The focal point is currently on the player actor. Set the PlayerLocation blackboard key
-				to the location of this focal point, so that when the agent moves into the Search behaviour
-				it will move to the actual location of the player when the agent lost LoS as opposed to the last
-				location it sensed the player at.
-				*/
-				Controller->SetPlayerLocation(Controller->GetFocalPoint());
-				// LoS to player is blocked
-				bPlayerSeen = false;
-				// Reset the player has seen blackboard key so that the Agent can begin searching.
-				Controller->SetPlayerFound(bPlayerSeen);
-				// Clear the focus on the player
-				Controller->ClearFocus(EAIFocusPriority::Gameplay);
-				bCanSearch = true;
-				Controller->SetCanSearch(bCanSearch);
-			}
+			/* The focal point is currently on the player actor. Set the PlayerLocation blackboard key
+			to the location of this focal point, so that when the agent moves into the Search behaviour
+			it will move to the actual location of the player when the agent lost LoS as opposed to the last
+			location it sensed the player at.
+			*/
+			Controller->SetPlayerLocation(Controller->GetFocalPoint());
+			// LoS to player is blocked
+			bPlayerSeen = false;
+			// Reset the player has seen blackboard key so that the Agent can begin searching.
+			Controller->SetPlayerFound(bPlayerSeen);
+			// Clear the focus on the player
+			Controller->ClearFocus(EAIFocusPriority::Gameplay);
+			bCanSearch = true;
+			Controller->SetCanSearch(bCanSearch);
 		}
 	}
 }
