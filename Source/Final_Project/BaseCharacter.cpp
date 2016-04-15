@@ -84,6 +84,12 @@ void ABaseCharacter::Tick( float DeltaTime )
 	{
 		StopFiring();
 	}
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, GetActorLabel());
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, FString::Printf(TEXT("CanFire - %s"), CanFire ? TEXT("true") : TEXT("false")));
+	}
 }
 
 void ABaseCharacter::CustomRInterpTo(FRotator current, float Interp_Speed)
@@ -224,10 +230,22 @@ void ABaseCharacter::DelayedDestroy()
 
 void ABaseCharacter::DealDamage_Implementation(float Damage)
 {
-	/* If we have not already been hit. Otherwise the hit animation will 
-	play for as many times as we have been hit. but if we're already playing 
-	the animation we do not want to play it again because it will interrupt other events. */
+	/* Hit animation interrupts reload animation end AnimNotify event.
+	Causing CanFire to not be reset to true. So check if CanFire needs
+	to be reset, if it does, reset it. 
+	This is a bit of a hack, but it works so...*/
+	if (!CanFire) CanFire = true;
+	// If we have not already been hit.
 	if (!bReceivedHit)
+		// The animation can play
 		bReceivedHit = true;
+	/* Otherwise bReceivedHit is true and the hit animation will
+	play for as many times as we have been hit. But if we're already playing 
+	the animation we do not want to play it again because it will interrupt other events. */
+	else
+	{
+		// Don't allow the animation to play again
+		bReceivedHit = false;
+	}
 	CalcHealth(DealDamage(Damage));
 }

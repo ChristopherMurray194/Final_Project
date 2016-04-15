@@ -99,7 +99,7 @@ public:
 	virtual void Fire();
 	void StopFiring();
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 		bool isReloading = false;
 	
 	/** Reload the weapon */

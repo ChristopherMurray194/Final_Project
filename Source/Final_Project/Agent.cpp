@@ -46,6 +46,8 @@ void AAgent::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	SensingComp->RequestStimuliListenerUpdate();
+
 	AAgentController* Controller = Cast<AAgentController>(GetController());
 	if (bPlayerSeen && Controller != NULL)  
 	{
