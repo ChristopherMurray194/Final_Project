@@ -128,7 +128,8 @@ void ARifle::Fire()
 					// Do less damage to the player
 					BaseCharacter->DealDamage_Implementation(0.5f);
 				}
-				else if (BaseCharacter != NULL)
+				// Check that the owner is not also an enemy
+				else if ( !(GetOwner()->ActorHasTag("Enemy")) && (BaseCharacter != NULL) )
 				{
 					// Deal damage to the base character i.e. Agent
 					BaseCharacter->DealDamage_Implementation(20.0f);
