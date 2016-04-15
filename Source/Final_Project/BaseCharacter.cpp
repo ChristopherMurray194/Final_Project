@@ -195,6 +195,10 @@ void ABaseCharacter::CalcHealth(float DamageDealt)
 		if (Controller != NULL)
 			// Stop character from being able to move so the death animation can be played
 			DetachFromControllerPendingDestroy();
+		
+		// Disable collision on the character
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		// We can now play the death animation
 		isDead = true;
