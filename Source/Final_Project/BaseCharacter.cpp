@@ -84,12 +84,6 @@ void ABaseCharacter::Tick( float DeltaTime )
 	{
 		StopFiring();
 	}
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, GetActorLabel());
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Blue, FString::Printf(TEXT("CanFire - %s"), CanFire ? TEXT("true") : TEXT("false")));
-	}
 }
 
 void ABaseCharacter::CustomRInterpTo(FRotator current, float Interp_Speed)
