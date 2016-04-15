@@ -45,7 +45,7 @@ public:
 		void SensePawn(TArray<AActor*> OtherPawn);
 
 	// Can the Agent begin searching?
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 		bool bCanSearch = false;
 	bool GetCanSearch() const;
 
@@ -61,4 +61,8 @@ private:
 	// Time the agent can search for
 	float SearchTime = 10.0f;
 	float SearchStartTime = 0.0f;
+
+	/* If we can see the player, check we have a clear LoS */
+	void CheckLoS();
+
 };

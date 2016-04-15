@@ -43,8 +43,10 @@ public:
 
 	/* Set PlayerFound Blackboard Key */
 	void SetPlayerFound(bool PlayerFound);
-	/* Set CanSearch Blackboard Key */
-	void SetCanSearch(bool CanSearch);
+
+	UFUNCTION(BlueprintCallable, Category = "Search")
+		/* Set CanSearch Blackboard Key */
+		void SetCanSearch(bool CanSearch);
 
 	// Location of the agent which is possessed by this controller
 	FVector AgentLocation;

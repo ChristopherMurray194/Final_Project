@@ -45,51 +45,13 @@ void AAgent::PostInitializeComponents()
 void AAgent::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
+	
 	SensingComp->RequestStimuliListenerUpdate();
 
-	AAgentController* Controller = Cast<AAgentController>(GetController());
-	if (bPlayerSeen && Controller != NULL)  
+	if (bPlayerSeen)  
 	{
-		// Get the location of the agent
-		FVector AgentLocation = GetActorLocation();
-		// Get the direction the agent is facing
-		FVector Direction = GetActorForwardVector();
-		// Default trace params
-		FCollisionQueryParams TraceParams(TEXT("LineOfSight_Trace"), false, this);
-		TraceParams.bTraceAsyncScene = true;
-
-		//=====Draw line trace from agent to player=====//
-		FHitResult Hit(ForceInit);
-		UWorld* World = GetWorld();
-
-		World->LineTraceSingleByChannel(Hit, AgentLocation + Direction, Controller->GetFocalPoint(), ECollisionChannel::ECC_Visibility, TraceParams, FCollisionResponseParams::DefaultResponseParam);
-		DrawDebugLine(World, AgentLocation + Direction, Controller->GetFocalPoint(), FColor::Yellow, false, -1, 0, 2.0f);
-		//==============================================//
-
-		AActor* HitActor = Hit.GetActor();
-		if (HitActor != NULL && HitActor->ActorHasTag("Player"))
-		{ 
-		}
-		/* Otherwise we can assume the actor intersecting the line trace is blocking the line of sight
-		from the agent to the player */
-		else if(HitActor != NULL)
-		{
-			/* The focal point is currently on the player actor. Set the PlayerLocation blackboard key
-			to the location of this focal point, so that when the agent moves into the Search behaviour
-			it will move to the actual location of the player when the agent lost LoS as opposed to the last
-			location it sensed the player at.
-			*/
-			Controller->SetPlayerLocation(Controller->GetFocalPoint());
-			// LoS to player is blocked
-			bPlayerSeen = false;
-			// Reset the player has seen blackboard key so that the Agent can begin searching.
-			Controller->SetPlayerFound(bPlayerSeen);
-			// Clear the focus on the player
-			Controller->ClearFocus(EAIFocusPriority::Gameplay);
-			bCanSearch = true;
-			Controller->SetCanSearch(bCanSearch);
-		}
+		// Check our LoS to the player and act accordingly when broken.
+		CheckLoS();
 	}
 }
 
@@ -114,6 +76,53 @@ void AAgent::SensePawn(TArray<AActor*> OtherPawn)
 				bPlayerSeen = true;
 				Controller->SetPlayerFound(bPlayerSeen);
 			}
+		}
+	}
+}
+
+void AAgent::CheckLoS()
+{
+	AAgentController* Controller = Cast<AAgentController>(GetController());
+	if (Controller != NULL)
+	{
+		// Get the location of the agent
+		FVector AgentLocation = GetActorLocation();
+		// Get the direction the agent is facing
+		FVector Direction = GetActorForwardVector();
+		// Default trace params
+		FCollisionQueryParams TraceParams(TEXT("LineOfSight_Trace"), false, this);
+		TraceParams.bTraceAsyncScene = true;
+
+		//=====Draw line trace from agent to player=====//
+		FHitResult Hit(ForceInit);
+		UWorld* World = GetWorld();
+
+		World->LineTraceSingleByChannel(Hit, AgentLocation + Direction, Controller->GetFocalPoint(), ECollisionChannel::ECC_Visibility, TraceParams, FCollisionResponseParams::DefaultResponseParam);
+		DrawDebugLine(World, AgentLocation + Direction, Controller->GetFocalPoint(), FColor::Yellow, false, -1, 0, 2.0f);
+		//==============================================//
+
+		AActor* HitActor = Hit.GetActor();
+		if (HitActor != NULL && HitActor->ActorHasTag("Player"))
+		{
+		}
+		/* Otherwise we can assume the actor intersecting the line trace is blocking the line of sight
+		from the agent to the player */
+		else if (HitActor != NULL)
+		{
+			/* The focal point is currently on the player actor. Set the PlayerLocation blackboard key
+			to the location of this focal point, so that when the agent moves into the Search behaviour
+			it will move to the actual location of the player when the agent lost LoS as opposed to the last
+			location it sensed the player at.
+			*/
+			Controller->SetPlayerLocation(Controller->GetFocalPoint());
+			// LoS to player is blocked
+			bPlayerSeen = false;
+			// Reset the player has seen blackboard key so that the Agent can begin searching.
+			Controller->SetPlayerFound(bPlayerSeen);
+			// Clear the focus on the player
+			Controller->ClearFocus(EAIFocusPriority::Gameplay);
+			bCanSearch = true;
+			Controller->SetCanSearch(bCanSearch);
 		}
 	}
 }
