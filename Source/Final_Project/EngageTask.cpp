@@ -12,8 +12,7 @@
 
 UEngageTask::UEngageTask()
 {
-	bNotifyTick = true;
-	BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UEngageTask, BlackboardKey));
+	
 }
 
 EBTNodeResult::Type UEngageTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -28,7 +27,7 @@ EBTNodeResult::Type UEngageTask::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 	}
 	else
 	{
-		Agent = Controller->GetAgentOwner();
+		class AAgent* Agent = Controller->GetAgentOwner();
 		// If the agent's weapon has ammo in it
 		if (Agent->GetCurrentWeapon()->CalculateAmmo() > 0)
 		{

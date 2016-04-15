@@ -123,6 +123,9 @@ void AAgent::CheckLoS()
 			Controller->ClearFocus(EAIFocusPriority::Gameplay);
 			bCanSearch = true;
 			Controller->SetCanSearch(bCanSearch);
+			// Stop firing if still firing
+			if (isFiring)
+				StopFiring();
 		}
 	}
 }
