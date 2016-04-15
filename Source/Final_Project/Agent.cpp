@@ -65,12 +65,14 @@ void AAgent::Tick(float DeltaSeconds)
 		DrawDebugLine(World, AgentLocation + Direction, Controller->GetFocalPoint(), FColor::Yellow, false, -1, 0, 2.0f);
 		//==============================================//
 
-		if (Hit.GetActor()->ActorHasTag("Player"))
+		AActor* HitActor = Hit.GetActor();
+		if (HitActor != NULL && HitActor->ActorHasTag("Player"))
 		{ 
 		}
 		/* Otherwise we can assume the actor intersecting the line trace is blocking the line of sight
 		from the agent to the player */
-		else{
+		else if(HitActor != NULL)
+		{
 			/* The focal point is currently on the player actor. Set the PlayerLocation blackboard key
 			to the location of this focal point, so that when the agent moves into the Search behaviour
 			it will move to the actual location of the player when the agent lost LoS as opposed to the last

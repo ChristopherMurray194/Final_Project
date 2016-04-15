@@ -123,12 +123,12 @@ void ARifle::Fire()
 				* So that we can access the class' functions
 				*/
 				ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(Other);
-				if (BaseCharacter->ActorHasTag("Player"))
+				if (BaseCharacter->ActorHasTag("Player") && BaseCharacter != NULL)
 				{
 					// Do less damage to the player
 					BaseCharacter->DealDamage_Implementation(0.5f);
 				}
-				else
+				else if (BaseCharacter != NULL)
 				{
 					// Deal damage to the base character i.e. Agent
 					BaseCharacter->DealDamage_Implementation(20.0f);
