@@ -57,7 +57,7 @@ void AFinal_ProjectCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	
 	// Set the Agent colour
-	GetMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), PlayerColor);
+	GetNewMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), PlayerColor);
 }
 
 void AFinal_ProjectCharacter::BeginPlay()

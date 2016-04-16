@@ -16,6 +16,9 @@ public:
 	// Sets default values for this character's properties
 	ABaseCharacter();
 
+	UPROPERTY(EditAnywhere)
+		class USkeletalMeshComponent* ManMesh;
+
 	virtual void PostInitializeComponents();
 
 	// Called when the game starts or when spawned
@@ -23,6 +26,9 @@ public:
 	
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
+
+	// New GetMesh function to use
+	USkeletalMeshComponent* GetNewMesh() const;
 
 	// Current tick time
 	UPROPERTY(BlueprintReadOnly)

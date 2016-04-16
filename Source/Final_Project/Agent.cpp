@@ -38,7 +38,7 @@ void AAgent::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	
 	// Set the Agent colour
-	GetMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), EnemyColor);
+	GetNewMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), EnemyColor);
 	
 }
 

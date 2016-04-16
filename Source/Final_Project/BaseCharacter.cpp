@@ -3,7 +3,6 @@
 #include "Final_Project.h"
 #include "BaseCharacter.h"
 #include "Rifle.h"
-#include "Animation/AnimInstance.h"
 #include "Engine.h"
 #include "Delegate.h"
 
@@ -16,24 +15,42 @@ ABaseCharacter::ABaseCharacter()
 
 	GetCharacterMovement()->MaxWalkSpeed = DefaultSpeed;	// Set the default movement speed
 
+	GetMesh()->DestroyComponent(); // Destroy old inherited mesh
+	// Replace with new mesh
+	ManMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mannequin_Mesh"));
+	ManMesh->AttachTo(RootComponent);
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshAsset(TEXT("/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin"));
 	if (MeshAsset.Succeeded())
 	{
 		// Set Mesh via code
-		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
-		GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -97.0f));
-		GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
-		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);	// Set collidable
-		GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility,ECollisionResponse::ECR_Block); // Set the visibility channel to block
-		GetMesh()->bGenerateOverlapEvents = true; // Allow other actors to overlap
-		GetMesh()->SetNotifyRigidBodyCollision(true); // Set 'Simulation Generates Hit Events' true so the trace line can collide
+		ManMesh->SetSkeletalMesh(MeshAsset.Object);
+		ManMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -97.0f));
+		ManMesh->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+		ManMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);	// Set collidable
+		ManMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block); // Set the visibility channel to block
+		ManMesh->bGenerateOverlapEvents = true; // Allow other actors to overlap
+		ManMesh->SetNotifyRigidBodyCollision(true); // Set 'Simulation Generates Hit Events' true so the trace line can collide
 
 		// Set the animation blueprint to be used
 		static ConstructorHelpers::FClassFinder<UAnimInstance> AnimationAsset(TEXT("/Game/AnimStarterPack/UE4ASP_HeroTPP_AnimBlueprint"));
 		if (AnimationAsset.Succeeded())
 		{
 			// Assign the animation blueprint to the mesh
-			GetMesh()->SetAnimInstanceClass(AnimationAsset.Class);
+			ManMesh->SetAnimInstanceClass(AnimationAsset.Class);
+		}
+		// Set the material
+		static ConstructorHelpers::FObjectFinder<UMaterial> MaterialAsset(TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_UE4Man_Body"));
+		static ConstructorHelpers::FObjectFinder<UMaterialInstance> MaterialAsset01(TEXT("/Game/AnimStarterPack/UE4_Mannequin/Materials/M_UE4Man_ChestLogo"));
+		if (MaterialAsset.Succeeded())
+		{
+			ManMesh->SetMaterial(0, MaterialAsset.Object);
+			ManMesh->SetMaterial(1, MaterialAsset01.Object);
+		}
+		// Set the physics asset
+		static ConstructorHelpers::FObjectFinder<UPhysicsAsset> PhysicsAsset(TEXT("/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin_PhysicsAsset"));
+		if (PhysicsAsset.Succeeded())
+		{
+			ManMesh->PhysicsAssetOverride = PhysicsAsset.Object;
 		}
 	}
 }
@@ -64,7 +81,7 @@ void ABaseCharacter::BeginPlay()
 		if (SpawnedRifle != NULL)
 		{
 			//SpawnedRifle->CreateDefaultSubobject<ARifle>(TEXT("Rifle"));
-			SpawnedRifle->AttachRootComponentTo(GetMesh(), TEXT("GunSocket"), EAttachLocation::SnapToTargetIncludingScale, true);
+			SpawnedRifle->AttachRootComponentTo(ManMesh, TEXT("GunSocket"), EAttachLocation::SnapToTargetIncludingScale, true);
 		}
 	}
 }
@@ -101,6 +118,8 @@ void ABaseCharacter::SetupPlayerInputComponent(class UInputComponent* InputCompo
 	Super::SetupPlayerInputComponent(InputComponent);
 
 }
+
+USkeletalMeshComponent* ABaseCharacter::GetNewMesh() const { return ManMesh; }
 
 void ABaseCharacter::Sprint()
 {
@@ -197,7 +216,7 @@ void ABaseCharacter::CalcHealth(float DamageDealt)
 			DetachFromControllerPendingDestroy();
 		
 		// Disable collision on the character
-		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		ManMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 		// We can now play the death animation
