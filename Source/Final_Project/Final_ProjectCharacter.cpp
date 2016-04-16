@@ -7,6 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Perception/AISense_Sight.h"
 #include "Agent.h"
+#include "Rifle.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AFinal_ProjectCharacter
@@ -37,7 +38,7 @@ AFinal_ProjectCharacter::AFinal_ProjectCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->AttachTo(RootComponent);
-	CameraBoom->TargetArmLength = 200.0f; // The camera follows at this distance behind the character	
+	CameraBoom->TargetArmLength = DefaultCameraDist; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 	CameraBoom->SetRelativeLocation(FVector(0.0f, 60.0f, 50.0f));
 
@@ -80,6 +81,14 @@ void AFinal_ProjectCharacter::BeginPlay()
 
 	// Player can be seen by AI
 	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(), this);
+}
+
+void AFinal_ProjectCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	// Set the reticle location
+	ReticleLocation = FVector2D(ReticleX, ReticleY);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -259,4 +268,18 @@ void AFinal_ProjectCharacter::ToggleControllerYaw()
 		bUseControllerRotationYaw = true;
 		bUnlockYaw = false;
 	}
+}
+
+void AFinal_ProjectCharacter::AimDownSight()
+{
+	Super::AimDownSight();
+	// Zoom the camera in
+	CameraBoom->TargetArmLength = 100.0f;
+}
+
+void AFinal_ProjectCharacter::StopAiming()
+{
+	Super::StopAiming();
+	// Zoom the camera back out
+	CameraBoom->TargetArmLength = DefaultCameraDist;
 }

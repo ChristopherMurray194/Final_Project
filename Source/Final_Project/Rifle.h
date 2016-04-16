@@ -17,7 +17,12 @@ public:
 	// Sets default values for this actor's properties
 	ARifle();
 
-	void TraceLine(FHitResult* Hit);
+	/* 
+	Create a line trace from the gun.
+	@param Hit - The hit result of the line trace.
+	@param DrawTrace - Whether the line trace should be visible or not. 
+	*/
+	void TraceLine(FHitResult* Hit, bool DrawTrace);
 
 	// Called when the fire key is pressed
 	bool PullTrigger();

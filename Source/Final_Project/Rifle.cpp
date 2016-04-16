@@ -37,12 +37,10 @@ ARifle::ARifle()
 	}
 }
 
-void ARifle::TraceLine(FHitResult* Hit)
+void ARifle::TraceLine(FHitResult* Hit, bool DrawTrace)
 {
 	// Get the location of the arrow component
 	FVector Loc = ArrowComp->GetComponentLocation();
-	// Get the rotation of the arrow component
-	FRotator Rot = ArrowComp->GetComponentRotation();
 	// The direction is equal to the rotation
 	FVector Direction = ArrowComp->GetForwardVector();
 
@@ -66,8 +64,10 @@ void ARifle::TraceLine(FHitResult* Hit)
 	if (World)
 	{
 		World->LineTraceSingleByChannel(*Hit, Start, End, ECollisionChannel::ECC_Visibility, TraceParams, FCollisionResponseParams::DefaultResponseParam);
-		// Visualise the line trace
-		DrawDebugLine(World, Start, End, FColor::Red, false, -1, 0, 2.0f);
+		// Should the trace be visible
+		if (DrawTrace)
+			// Visualise the line trace
+			DrawDebugLine(World, Start, End, FColor::Red, false, -1, 0, 2.0f);
 	}
 }
 
@@ -109,7 +109,7 @@ void ARifle::Fire()
 	{
 		FHitResult Hit(ForceInit);
 		// Fire a single line trace
-		TraceLine(&Hit);
+		TraceLine(&Hit, true);
 
 		// If the line trace hits an actor, store it.
 		AActor* Other = Hit.GetActor();

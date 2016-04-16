@@ -20,6 +20,19 @@ public:
 
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+
+	// Location line trace from weapon hits, to be referenced for the reticle location.
+	UPROPERTY(BlueprintReadOnly)
+		FVector2D ReticleLocation;
+	
+	FVector2D ReticleDefaultLocation;
+	UPROPERTY(EditAnywhere, Category = Crosshair)
+		// X coordinate for the crosshair
+		float ReticleX = -70.0f;
+	UPROPERTY(EditAnywhere, Category = Crosshair)
+		// Y coordinate for the crosshair
+		float ReticleY = -60.0f;
 
 	/* The HUD asset */
 	UPROPERTY(EditAnywhere, Category = HUD)
@@ -39,6 +52,8 @@ private:
 	/* When Keyboard asterix key pressed twice, character does not use controller yaw */
 	void ToggleControllerYaw();
 	bool bUnlockYaw = false;	// Toggle between controller yaw
+
+	float DefaultCameraDist = 200.0f; // Default distance of the camera from the player
 
 protected:
 
@@ -78,6 +93,11 @@ protected:
 	bool bCanStand = false;
 
 	virtual void GoProne() override;
+	//===================================//
+
+	//=============Aiming================//
+	virtual void AimDownSight() override;
+	virtual void StopAiming() override;
 	//===================================//
 
 protected:

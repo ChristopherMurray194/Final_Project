@@ -66,8 +66,8 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		bool isAiming = false;
 
-	void AimDownSight();
-	void StopAiming();
+	virtual void AimDownSight();
+	virtual void StopAiming();
 
 	FRotator DeltaRotator;
 
