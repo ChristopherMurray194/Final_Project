@@ -41,11 +41,19 @@ AFinal_ProjectCharacter::AFinal_ProjectCharacter()
 	CameraBoom->TargetArmLength = DefaultCameraDist; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 	CameraBoom->SetRelativeLocation(FVector(0.0f, 60.0f, 50.0f));
-
+	
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->AttachTo(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
+	// Find the HUD class
+	ConstructorHelpers::FClassFinder<UUserWidget>HUDAsset(TEXT("/Game/UI/HUD"));
+	if (HUDAsset.Succeeded())
+	{
+		// Set the HUD asset
+		HUD = HUDAsset.Class;
+	}
 
 	AIControllerClass = APlayerController::StaticClass();
 	// Auto possess player0
