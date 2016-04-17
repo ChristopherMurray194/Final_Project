@@ -95,6 +95,9 @@ void AFinal_ProjectCharacter::SetupPlayerInputComponent(class UInputComponent* I
 {
 	// Set up gameplay key bindings
 	check(InputComponent);
+
+	// Exit the game on Esc key event
+	InputComponent->BindAction("Exit", IE_Pressed, this, &AFinal_ProjectCharacter::QuitGame);
 	// Handle space bar input
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AFinal_ProjectCharacter::Jump);
 	InputComponent->BindAction("Jump", IE_Released, this, &AFinal_ProjectCharacter::StopJumping);
@@ -280,3 +283,5 @@ void AFinal_ProjectCharacter::StopAiming()
 	// Zoom the camera back out
 	CameraBoom->TargetArmLength = DefaultCameraDist;
 }
+
+void AFinal_ProjectCharacter::QuitGame(){ FGenericPlatformMisc::RequestExit(false); }
