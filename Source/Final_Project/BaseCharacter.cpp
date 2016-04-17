@@ -47,7 +47,7 @@ ABaseCharacter::ABaseCharacter()
 			ManMesh->SetMaterial(1, MaterialAsset01.Object);
 		}
 		// Set the physics asset
-		static ConstructorHelpers::FObjectFinder<UPhysicsAsset> PhysicsAsset(TEXT("/Game/AnimStarterPack/UE4_Mannequin/Mesh/SK_Mannequin_PhysicsAsset"));
+		static ConstructorHelpers::FObjectFinder<UPhysicsAsset> PhysicsAsset(TEXT("/Game/AnimStarterPack/UE4_Mannequin/Mesh/Physics_Asset"));
 		if (PhysicsAsset.Succeeded())
 		{
 			ManMesh->PhysicsAssetOverride = PhysicsAsset.Object;

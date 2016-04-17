@@ -33,7 +33,7 @@ public:
 		float ReticleX = -70.0f;
 	UPROPERTY(EditAnywhere, Category = Crosshair)
 		// Y coordinate for the crosshair
-		float ReticleY = -60.0f;
+		float ReticleY = -70.0f;
 
 	/* The HUD asset */
 	UPROPERTY(EditAnywhere, Category = HUD)
