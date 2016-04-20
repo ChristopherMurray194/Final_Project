@@ -94,7 +94,7 @@ public:
 	class ARifle* SpawnedRifle;
 
 	/* Get the current rifle the character is holding*/
-	class ARifle* GetCurrentWeapon();
+	class ABaseWeapon* GetCurrentWeapon();
 
 	UPROPERTY(BlueprintReadOnly)
 		bool isFiring = false;

@@ -3,6 +3,7 @@
 #include "Final_Project.h"
 #include "BaseCharacter.h"
 #include "Rifle.h"
+#include "BaseWeapon.h"
 #include "Engine.h"
 #include "Delegate.h"
 
@@ -77,7 +78,6 @@ void ABaseCharacter::BeginPlay()
 
 		// Spawn a Rifle object
 		SpawnedRifle = World->SpawnActor<ARifle>(SpawnParams);
-
 		if (SpawnedRifle != NULL)
 		{
 			//SpawnedRifle->CreateDefaultSubobject<ARifle>(TEXT("Rifle"));
@@ -178,27 +178,27 @@ void ABaseCharacter::Fire()
 { 
 	if (CanFire)
 	{
-		if (SpawnedRifle != NULL)
-			isFiring = SpawnedRifle->PullTrigger();
+		if (GetCurrentWeapon() != NULL)
+			isFiring = GetCurrentWeapon()->PullTrigger();
 	}
 }
 
 void ABaseCharacter::StopFiring()
 {
-	if (SpawnedRifle != NULL)
-		isFiring = SpawnedRifle->ReleaseTrigger();
+	if (GetCurrentWeapon() != NULL)
+		isFiring = GetCurrentWeapon()->ReleaseTrigger();
 }
 
-ARifle* ABaseCharacter::GetCurrentWeapon(){ return SpawnedRifle; }
+ABaseWeapon* ABaseCharacter::GetCurrentWeapon(){ return SpawnedRifle; }
 
 void ABaseCharacter::BeginReload()
 { 
 	CanFire = false;
 	isReloading = true; 
 	// Reload
-	if (SpawnedRifle != NULL)
+	if (GetCurrentWeapon() != NULL)
 		// Reset AmmoCount
-		SpawnedRifle->SetAmmoCount(SpawnedRifle->GetClipSize());
+		GetCurrentWeapon()->SetAmmoCount(GetCurrentWeapon()->GetClipSize());
 }
 
 void ABaseCharacter::EndReload(){ isReloading = false; }
@@ -237,9 +237,9 @@ void ABaseCharacter::DelayedDestroy()
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 	TimerHandle.Invalidate();
 
-	// Ensure the rifle associated with this characer is also destroyed
-	if (SpawnedRifle != NULL)
-		SpawnedRifle->Destroy();
+	// Ensure the weapon associated with this characer is also destroyed
+	if (GetCurrentWeapon() != NULL)
+		GetCurrentWeapon()->Destroy();
 
 	// Destroy the character
 	Destroy();
