@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include <vector>
 #include "FuzzyTerm.h"
 
 /**
@@ -12,7 +13,7 @@ class FINAL_PROJECT_API FzAND : public FuzzyTerm
 	private:
 		// An instance of this class may AND together up to 4 terms
 		std::vector<FuzzyTerm*> m_Terms;
-
+		
 		// Disallow assignment
 		FzAND& operator=(const FzAND&);
 

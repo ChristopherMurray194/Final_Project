@@ -1,10 +1,4 @@
 #include "Final_Project.h"
-#include <iostream>
-#include <map>
-#include <vector>
-#include <assert.h>
-#include "Variable.h"
-#include "FuzzyRule.h"
 #include "FuzzyModule.h"
 
 FuzzyModule::~FuzzyModule()

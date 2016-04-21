@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Final_Project.h"
-#include <iostream>
-#include "FuzzySet.h"
 #include "FuzzySet_RightShoulder.h"
 
 

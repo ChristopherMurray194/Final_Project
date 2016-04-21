@@ -2,7 +2,13 @@
 
 #pragma once
 
+#include <map>
+#include <assert.h>
+#include <iostream>
 #include "FuzzySet.h"
+#include "FuzzySet_LeftShoulder.h"
+#include "FuzzySet_RightShoulder.h"
+#include "FuzzySet_Triangle.h"
 #include "FzSet.h"
 
 /**

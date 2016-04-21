@@ -1,17 +1,17 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Final_Project.h"
-#include "BaseWeapon.h"
 #include "Components/ArrowComponent.h"
 #include "Projectile.h"
 #include "IDamageable.h"
 #include "BaseCharacter.h"
+#include "FuzzyModule.h"
+#include "BaseWeapon.h"
 
 // Sets default values
-ABaseWeapon::ABaseWeapon()
-{
+ABaseWeapon::ABaseWeapon(){}
 
-}
+double ABaseWeapon::CalculateDesirability(double Dist, double Ammo){ return 0.0; }
 
 void ABaseWeapon::SetupWeaponMesh(USkeletalMesh* Mesh, UMaterial* Mat, FVector relLocation, FRotator relRotation)
 {
@@ -31,7 +31,6 @@ void ABaseWeapon::SetupArrowComp(FVector relLocation, FRotator relRotation)
 	ArrowComp->SetRelativeLocation(relLocation);
 	ArrowComp->SetRelativeRotation(relRotation);
 	ArrowComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
 }
 
 void ABaseWeapon::TraceLine(FHitResult* Hit, bool DrawTrace)

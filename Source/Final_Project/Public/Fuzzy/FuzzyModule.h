@@ -2,6 +2,13 @@
 
 #pragma once
 
+#include <iostream>
+#include <map>
+#include <vector>
+#include <assert.h>
+#include "Variable.h"
+#include "FuzzyRule.h"
+
 /**
  * 
  */

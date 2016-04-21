@@ -3,17 +3,19 @@
 #pragma once
 
 #include "Weapon/BaseWeapon.h"
-#include "Rifle.generated.h"
+#include "Pistol.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
-class FINAL_PROJECT_API ARifle : public ABaseWeapon
+class FINAL_PROJECT_API APistol : public ABaseWeapon
 {
 	GENERATED_BODY()
 
 public:
-
-	// Sets default values for this actor's properties
-	ARifle();
-
+	APistol();
+	
 	virtual double CalculateDesirability(double Dist, double Ammo) override;
+	
 };

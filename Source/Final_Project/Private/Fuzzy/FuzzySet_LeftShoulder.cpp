@@ -1,8 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Final_Project.h"
-#include "FuzzySet.h"
-#include <iostream>
 #include "FuzzySet_LeftShoulder.h"
 
 double FuzzySet_LeftShoulder::CalculateDOM(double val)const

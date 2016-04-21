@@ -1,14 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Final_Project.h"
-#include <map>
-#include <assert.h>
-#include <iostream>
-#include "FuzzySet.h"
-#include "FuzzySet_LeftShoulder.h"
-#include "FuzzySet_RightShoulder.h"
-#include "FuzzySet_Triangle.h"
-#include "FzSet.h"
 #include "Variable.h"
 
 Variable::~Variable()

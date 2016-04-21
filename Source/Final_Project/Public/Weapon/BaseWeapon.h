@@ -16,7 +16,7 @@ public:
 
 	class USkeletalMeshComponent* GunMesh;
 	class UArrowComponent* ArrowComp;
-
+	
 	/*
 	* Setup the skeletal mesh of the weapon 
 	* @param Mesh - Skeletal mesh of the weapon
@@ -68,6 +68,7 @@ public:
 		int32 AmmoCount = ClipSize;
 	//=============================================//
 
+	virtual double CalculateDesirability (double Dist, double Ammo);
 
 protected:
 	// Timer handle
