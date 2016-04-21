@@ -13,7 +13,7 @@ ARifle::ARifle()
 	// Rounds per second
 	SetRPS(10.0f);
 	// Range of rifle
-	SetRange(1000.0f);
+	SetRange(2000.0f);
 	// Damage values
 	SetPlayerDamage(0.5f);
 	SetEnemyDamage(20.0f);
