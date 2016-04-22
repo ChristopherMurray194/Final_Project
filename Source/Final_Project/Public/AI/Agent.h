@@ -16,6 +16,7 @@ public:
 	
 	virtual void PostInitializeComponents() override;
 	virtual void Tick(float DeltaSeconds) override;
+	virtual void BeginPlay() override;
 
 	// The behaviour tree to be used
 	UPROPERTY(EditAnywhere, Category = "Behaviour Tree")

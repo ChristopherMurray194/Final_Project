@@ -43,15 +43,15 @@ double APistol::CalculateDesirability(double Dist)
 	class FzSet VeryDesirable = Desirability.AddRightShoulderSet("Very Desirable", 50, 75, 100);
 
 	fm.AddRule(TargetClose, VeryDesirable);
-	fm.AddRule(TargetMedium, Desirable);
-	fm.AddRule(TargetFar, Undesirable);
-	fm.AddRule(AmmoLow, Undesirable);
-	fm.AddRule(AmmoMedium, Desirable);
+	fm.AddRule(TargetMedium, VeryDesirable);
+	fm.AddRule(TargetFar, VeryDesirable);
+	fm.AddRule(AmmoLow, VeryDesirable);
+	fm.AddRule(AmmoMedium, VeryDesirable);
 	fm.AddRule(AmmoHigh, VeryDesirable);
 
 	// Fuzzify the inputs
 	fm.Fuzzify("Distance", Dist);
-	fm.Fuzzify("AmmoStatus", CalculateAmmo());
+	fm.Fuzzify("Ammo", CalculateAmmo());
 
 	// Return the defuzzified crisp desirability value
 	return fm.Defuzzify("Desirability", FuzzyModule::centroid);

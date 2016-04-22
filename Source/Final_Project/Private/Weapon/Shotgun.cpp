@@ -18,7 +18,7 @@ AShotgun::AShotgun()
 	// Range of rifle
 	SetRange(750.0f);
 	// Damage values
-	SetPlayerDamage(0.5f);
+	SetPlayerDamage(20.0f);
 	SetEnemyDamage(50.0f);
 }
 
@@ -42,16 +42,16 @@ double AShotgun::CalculateDesirability(double Dist)
 	class FzSet Desirable = Desirability.AddTriangleSet("Desirable", 25, 50, 75);
 	class FzSet VeryDesirable = Desirability.AddRightShoulderSet("Very Desirable", 50, 75, 100);
 
-	fm.AddRule(TargetClose, VeryDesirable);
+	fm.AddRule(TargetClose, Undesirable);
 	fm.AddRule(TargetMedium, Undesirable);
 	fm.AddRule(TargetFar, Undesirable);
 	fm.AddRule(AmmoLow, Undesirable);
-	fm.AddRule(AmmoMedium, Desirable);
-	fm.AddRule(AmmoHigh, VeryDesirable);
+	fm.AddRule(AmmoMedium, Undesirable);
+	fm.AddRule(AmmoHigh, Undesirable);
 
 	// Fuzzify the inputs
 	fm.Fuzzify("Distance", Dist);
-	fm.Fuzzify("AmmoStatus", CalculateAmmo());
+	fm.Fuzzify("Ammo", CalculateAmmo());
 
 	// Return the defuzzified crisp desirability value
 	return fm.Defuzzify("Desirability", FuzzyModule::centroid);

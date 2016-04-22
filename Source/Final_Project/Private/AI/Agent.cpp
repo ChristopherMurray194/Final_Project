@@ -34,11 +34,6 @@ AAgent::AAgent()
 	SensingComp->ConfigureSense(*SightComp);
 	SensingComp->SetDominantSense(SightComp->GetSenseImplementation());
 	SensingComp->OnPerceptionUpdated.AddDynamic(this, &AAgent::SensePawn);
-
-	// Add the weapons to the Array
-	Weapons.Add(SpawnedShotgun);
-	Weapons.Add(SpawnedRifle);
-	Weapons.Add(SpawnedPistol);
 }
 
 void AAgent::PostInitializeComponents()
@@ -48,6 +43,26 @@ void AAgent::PostInitializeComponents()
 	// Set the Agent colour
 	GetNewMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), EnemyColor);
 	
+}
+
+void AAgent::BeginPlay()
+{
+	Super::BeginPlay();
+	// Spawn weapons
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = Instigator;
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		SpawnedShotgun = World->SpawnActor<AShotgun>(SpawnParams);
+		SpawnedPistol = World->SpawnActor<APistol>(SpawnParams);
+	}
+
+	// Add the weapons to the Array
+	Weapons.Push(SpawnedRifle);
+	Weapons.Push(SpawnedShotgun);
+	Weapons.Push(SpawnedPistol);
 }
 
 void AAgent::Tick(float DeltaSeconds)
@@ -63,7 +78,10 @@ void AAgent::Tick(float DeltaSeconds)
 		// Inside the bPlayerSeen check because there is no point in the agent
 		// changing weapon if they cannot see the weapon
 		FVector AgentPos = GetActorLocation();
-		FVector PlayerPos = Cast<AAgentController>( GetController() )->GetFocalPoint();
+		FVector PlayerPos = FVector(0.0f, 0.0f, 0.0f);
+		AAgentController* Controller = Cast<AAgentController>(GetController());
+		if (Controller != NULL)
+			PlayerPos = Controller->GetFocalPoint();
 		// Get the vector from the agent to the player
 		FVector AgentToPlayer = PlayerPos - AgentPos;
 		// Pass the distance between the agent and the player (magnitude of the vector)
@@ -94,6 +112,10 @@ void AAgent::SensePawn(TArray<AActor*> OtherPawn)
 				Controller->SetPlayerFound(bPlayerSeen);
 			}
 		}
+	}
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, FString::Printf(TEXT("%s"), bPistolEquipped ? TEXT("true") : TEXT("false")));
 	}
 }
 
@@ -151,54 +173,70 @@ void AAgent::SelectWeapon(float Dist)
 {
 	// Get the currently equipped weapon
 	ABaseWeapon* CurrentWeapon = GetCurrentWeapon();
-	// New weapon to change to
-	ABaseWeapon* NewWeapon = new ABaseWeapon();
+	// New weapon to change to (Initialize as current weapon so it is not NULL/not initialized)
+	ABaseWeapon* NewWeapon = CurrentWeapon;
 	double CurrentDesirability = CurrentWeapon->CalculateDesirability(Dist);
 	// The desirability of the most desirable weapon at the moment
 	double TempDesirability = 0.0;
-	for (auto &it : Weapons)
+	if ((CurrentWeapon && NewWeapon) != NULL)
 	{
-		// Calculate the desirability of this weapon
-		double OtherDesirability = it->CalculateDesirability(Dist);
-		// If the this weapon is more desirable than the currently equipped weapon 
-		if (OtherDesirability > CurrentDesirability)
+		for (auto &it : Weapons)
 		{
-			// Check for the first iteration of the Weapons array
-			if (TempDesirability == 0.0)
+			if (it != NULL)
 			{
-				// This is currently the most desirable weapon
-				TempDesirability = OtherDesirability;
-				// Set as new weapon to equip
-				NewWeapon = it;
+				// Calculate the desirability of this weapon
+				double OtherDesirability = it->CalculateDesirability(Dist);
+				if (GEngine)
+				{
+					GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Yellow, FString::Printf(TEXT("%f"), Dist));
+					GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Blue, FString::Printf(TEXT("%f"), CurrentDesirability));
+					GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, FString::Printf(TEXT("%f"), OtherDesirability));
+				}
+				// If the this weapon is more desirable than the currently equipped weapon 
+				if (OtherDesirability > CurrentDesirability)
+				{
+					// Check for the first iteration of the Weapons array
+					if (TempDesirability == 0.0)
+					{
+						// This is currently the most desirable weapon
+						TempDesirability = OtherDesirability;
+						// Set as new weapon to equip
+						NewWeapon = it;
+					}
+					else if (OtherDesirability > TempDesirability)
+						TempDesirability = OtherDesirability;
+					// Set this as the new weapon to equip
+					NewWeapon = it;
+				}
 			}
-			else if (OtherDesirability > TempDesirability)
-				// Set this as the new weapon to equip
-				NewWeapon = it;
 		}
+		// If the current weapon isn't the same as the new weapon then
+		// the weapon needs to be changed
+		if (CurrentWeapon != NewWeapon)
+			// Equip the weapon
+			EquipWeapon(NewWeapon);
 	}
-	// Equip the weapon
-	EquipWeapon(NewWeapon);
 }
 
 void AAgent::EquipWeapon(ABaseWeapon* NewWeapon)
 {
 	// Get the currently equipped weapon
 	ABaseWeapon* CurrentWeapon = GetCurrentWeapon();
-	// Destroy that weapon
-	CurrentWeapon->Destroy();
+		// Destroy that weapon
+		CurrentWeapon->Destroy();
 
 	// Here we would spawn in the NewWeapon object and attach it
 	// to the rootcomponent of the character. However I do have a
 	// shotgun or a pistol asset (mesh, skeletal, material etc.) so
 	// to visualize that they are equipped I shall merely display the 
 	// shotgun or pistol animations respectively.
-	if (NewWeapon == SpawnedPistol)
+	if (NewWeapon == SpawnedPistol && ((NewWeapon && SpawnedPistol) != NULL))
 	{
 		bRifleEquipped = false;
 		bShotgunEquipped = false;
 		bPistolEquipped = true;
 	}
-	else if (NewWeapon == SpawnedShotgun)
+	else if (NewWeapon == SpawnedShotgun && ((NewWeapon && SpawnedShotgun) != NULL))
 	{
 		bRifleEquipped = false;
 		bShotgunEquipped = true;
@@ -212,7 +250,7 @@ void AAgent::EquipWeapon(ABaseWeapon* NewWeapon)
 		bShotgunEquipped = false;
 		bPistolEquipped = false;
 
-		// Spawn and euip the rifle
+		// Spawn and equip the rifle
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
 		SpawnParams.Instigator = Instigator;

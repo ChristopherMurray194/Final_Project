@@ -29,8 +29,8 @@ class FINAL_PROJECT_API Variable
 		MemberSets m_MemberSets;
 
 		// The minimum and maximum value of the range of this variable
-		double m_dMinRange;
-		double m_dMaxRange;
+		double m_dMinRange = 0.0;
+		double m_dMaxRange = 0.0;
 
 		// This method is called with the upper and lower bound of a set each time a
 		// new set is added to adjust the upper and lower range values accordingly

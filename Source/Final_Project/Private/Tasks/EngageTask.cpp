@@ -6,7 +6,7 @@
 #include "BehaviorTree/BlackboardComponent.h" // Necessary for GET_AI_CONFIG_VAR
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "AgentController.h"
-#include "Rifle.h"
+#include "BaseWeapon.h"
 #include "Agent.h"
 #include "Engine.h"
 
