@@ -68,7 +68,7 @@ public:
 		int32 AmmoCount = ClipSize;
 	//=============================================//
 
-	virtual double CalculateDesirability (double Dist, double Ammo);
+	virtual double CalculateDesirability (double Dist);
 
 protected:
 	// Timer handle

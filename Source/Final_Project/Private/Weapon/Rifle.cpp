@@ -34,7 +34,7 @@ ARifle::ARifle()
 	}
 }
 
-double ARifle::CalculateDesirability(double Dist, double Ammo)
+double ARifle::CalculateDesirability(double Dist)
 {
 	class FuzzyModule fm;
 
@@ -63,7 +63,7 @@ double ARifle::CalculateDesirability(double Dist, double Ammo)
 
 	// Fuzzify the inputs
 	fm.Fuzzify("Distance", Dist);
-	fm.Fuzzify("AmmoStatus", Ammo);
+	fm.Fuzzify("AmmoStatus", CalculateAmmo());
 	
 	// Return the defuzzified crisp desirability value
 	return fm.Defuzzify("Desirability", FuzzyModule::centroid);

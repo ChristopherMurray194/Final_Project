@@ -11,7 +11,7 @@
 // Sets default values
 ABaseWeapon::ABaseWeapon(){}
 
-double ABaseWeapon::CalculateDesirability(double Dist, double Ammo){ return 0.0; }
+double ABaseWeapon::CalculateDesirability(double Dist){ return 0.0; }
 
 void ABaseWeapon::SetupWeaponMesh(USkeletalMesh* Mesh, UMaterial* Mat, FVector relLocation, FRotator relRotation)
 {

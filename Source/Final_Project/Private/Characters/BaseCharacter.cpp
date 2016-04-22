@@ -80,8 +80,8 @@ void ABaseCharacter::BeginPlay()
 		SpawnedRifle = World->SpawnActor<ARifle>(SpawnParams);
 		if (SpawnedRifle != NULL)
 		{
-			//SpawnedRifle->CreateDefaultSubobject<ARifle>(TEXT("Rifle"));
 			SpawnedRifle->AttachRootComponentTo(ManMesh, TEXT("GunSocket"), EAttachLocation::SnapToTargetIncludingScale, true);
+			CurrentWeapon = SpawnedRifle;
 		}
 	}
 }
@@ -189,7 +189,9 @@ void ABaseCharacter::StopFiring()
 		isFiring = GetCurrentWeapon()->ReleaseTrigger();
 }
 
-ABaseWeapon* ABaseCharacter::GetCurrentWeapon(){ return SpawnedRifle; }
+ABaseWeapon* ABaseCharacter::GetCurrentWeapon(){ return CurrentWeapon; }
+
+void ABaseCharacter::SetCurrentWeapon(ABaseWeapon* Weapon){ CurrentWeapon = Weapon; }
 
 void ABaseCharacter::BeginReload()
 { 

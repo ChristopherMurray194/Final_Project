@@ -22,7 +22,7 @@ APistol::APistol()
 	SetEnemyDamage(10.0f);
 }
 
-double APistol::CalculateDesirability(double Dist, double Ammo)
+double APistol::CalculateDesirability(double Dist)
 {
 	class FuzzyModule fm;
 
@@ -51,7 +51,7 @@ double APistol::CalculateDesirability(double Dist, double Ammo)
 
 	// Fuzzify the inputs
 	fm.Fuzzify("Distance", Dist);
-	fm.Fuzzify("AmmoStatus", Ammo);
+	fm.Fuzzify("AmmoStatus", CalculateAmmo());
 
 	// Return the defuzzified crisp desirability value
 	return fm.Defuzzify("Desirability", FuzzyModule::centroid);

@@ -49,6 +49,13 @@ public:
 		bool bCanSearch = false;
 	bool GetCanSearch() const;
 
+	UPROPERTY(BlueprintReadOnly)
+		bool bPistolEquipped = false;
+	UPROPERTY(BlueprintReadOnly)
+		bool bShotgunEquipped = false;
+	UPROPERTY(BlueprintReadOnly)
+		bool bRifleEquipped = true;
+
 private:
 	// Colour of the enemy
 	FLinearColor EnemyColor = FLinearColor( (139.0f / 255.0f), (26.0f / 255.0f), (26.0f / 255.0f), 1.0f);
@@ -65,4 +72,22 @@ private:
 	/* If we can see the player, check we have a clear LoS */
 	void CheckLoS();
 
+	/* List of weapons owned by the Agent */
+	TArray<ABaseWeapon*> Weapons;
+
+	//============Weapons==============//
+	class APistol* SpawnedPistol;
+	class AShotgun* SpawnedShotgun;
+	// SpawnedRifle is in BaseCharacter header
+	//=================================//
+
+	/* Handle weapon selection 
+	* @param Dist - Distance of the agent to the player, used to calculate the desirability
+	*/
+	void SelectWeapon(float Dist);
+
+	/* Equip a new weapon 
+	* @param NewWeapon - New weapon to be equipped
+	*/
+	void EquipWeapon(ABaseWeapon* NewWeapon);
 };

@@ -22,7 +22,7 @@ AShotgun::AShotgun()
 	SetEnemyDamage(50.0f);
 }
 
-double AShotgun::CalculateDesirability(double Dist, double Ammo)
+double AShotgun::CalculateDesirability(double Dist)
 {
 	class FuzzyModule fm;
 
@@ -51,7 +51,7 @@ double AShotgun::CalculateDesirability(double Dist, double Ammo)
 
 	// Fuzzify the inputs
 	fm.Fuzzify("Distance", Dist);
-	fm.Fuzzify("AmmoStatus", Ammo);
+	fm.Fuzzify("AmmoStatus", CalculateAmmo());
 
 	// Return the defuzzified crisp desirability value
 	return fm.Defuzzify("Desirability", FuzzyModule::centroid);

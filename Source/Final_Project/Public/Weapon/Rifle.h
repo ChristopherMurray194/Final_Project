@@ -15,5 +15,5 @@ public:
 	// Sets default values for this actor's properties
 	ARifle();
 
-	virtual double CalculateDesirability(double Dist, double Ammo) override;
+	virtual double CalculateDesirability(double Dist) override;
 };
