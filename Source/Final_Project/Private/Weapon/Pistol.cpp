@@ -33,6 +33,13 @@ APistol::APistol()
 	}
 }
 
+void APistol::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	GunMesh->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), FLinearColor(0.f, (154.f / 255.f), (205.f / 255.f)));
+}
+
 double APistol::CalculateDesirability(double Dist)
 {
 	class FuzzyModule fm;

@@ -34,6 +34,13 @@ ARifle::ARifle()
 	}
 }
 
+void ARifle::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	GunMesh->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), FLinearColor((139.f / 255.f), (90.f / 255.f), (43.f / 255.f)));
+}
+
 double ARifle::CalculateDesirability(double Dist)
 {
 	class FuzzyModule fm;

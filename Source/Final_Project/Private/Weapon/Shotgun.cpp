@@ -33,6 +33,13 @@ AShotgun::AShotgun()
 	}
 }
 
+void AShotgun::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	GunMesh->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), FLinearColor(0.f, (139.f / 255.f), 0.f));
+}
+
 double AShotgun::CalculateDesirability(double Dist)
 {
 	class FuzzyModule fm;

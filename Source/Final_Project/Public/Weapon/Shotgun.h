@@ -15,6 +15,8 @@ class FINAL_PROJECT_API AShotgun : public ABaseWeapon
 
 public:
 	AShotgun();
+
+	void PostInitializeComponents() override;
 	
 	virtual double CalculateDesirability(double Dist) override;
 	

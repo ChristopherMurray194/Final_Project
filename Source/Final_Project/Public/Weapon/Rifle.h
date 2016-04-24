@@ -15,5 +15,7 @@ public:
 	// Sets default values for this actor's properties
 	ARifle();
 
+	void PostInitializeComponents() override;
+
 	virtual double CalculateDesirability(double Dist) override;
 };

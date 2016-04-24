@@ -15,6 +15,8 @@ class FINAL_PROJECT_API APistol : public ABaseWeapon
 
 public:
 	APistol();
+
+	void PostInitializeComponents() override;
 	
 	virtual double CalculateDesirability(double Dist) override;
 	
