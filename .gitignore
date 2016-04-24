@@ -7,3 +7,7 @@ Saved
 *.sln
 *.suo
 *.xcodeproj
+
+#Ignore all files inside the following directories
+Build/**
+Content/Models/**
