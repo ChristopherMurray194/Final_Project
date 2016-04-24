@@ -55,16 +55,16 @@ double ARifle::CalculateDesirability(double Dist)
 	class FzSet VeryDesirable = Desirability.AddRightShoulderSet("Very Desirable", 50, 75, 100);
 
 	fm.AddRule(TargetClose, Undesirable);
-	fm.AddRule(TargetMedium, Undesirable);
-	fm.AddRule(TargetFar, Undesirable);
+	fm.AddRule(TargetMedium, VeryDesirable);
+	fm.AddRule(TargetFar, Desirable);
 	fm.AddRule(AmmoLow, Undesirable);
-	fm.AddRule(AmmoMedium, Undesirable);
-	fm.AddRule(AmmoHigh, Undesirable);
+	fm.AddRule(AmmoMedium, Desirable);
+	fm.AddRule(AmmoHigh, VeryDesirable);
 
 	// Fuzzify the inputs
 	fm.Fuzzify("Distance", Dist);
 	fm.Fuzzify("Ammo", CalculateAmmo());
 	
 	// Return the defuzzified crisp desirability value
-	return fm.Defuzzify("Desirability", FuzzyModule::centroid);
+	return fm.Defuzzify("Desirability", FuzzyModule::max_av);
 }

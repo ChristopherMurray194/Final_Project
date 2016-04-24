@@ -20,6 +20,17 @@ APistol::APistol()
 	// Damage values
 	SetPlayerDamage(0.5f);
 	SetEnemyDamage(10.0f);
+
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> GunAsset(TEXT("/Game/FPWeapon/Mesh/SK_FPGun.SK_FPGun"));
+	if (GunAsset.Succeeded())
+	{
+		static ConstructorHelpers::FObjectFinder<UMaterial> MaterialAsset(TEXT("/Game/FPWeapon/Materials/M_FPGun"));
+		if (MaterialAsset.Succeeded())
+		{
+			SetupWeaponMesh(GunAsset.Object, MaterialAsset.Object, FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, -90.0f, 0.0f));
+		}
+		SetupArrowComp(FVector(0.0f, 50.0f, 11.0f), FRotator(0.0f, 90.0f, 0.0f));
+	}
 }
 
 double APistol::CalculateDesirability(double Dist)
@@ -35,7 +46,7 @@ double APistol::CalculateDesirability(double Dist)
 	class Variable& AmmoStatus = fm.CreateFLV("Ammo");
 	class FzSet AmmoLow = AmmoStatus.AddLeftShoulderSet("AmmoLow", 0, 2, 5);
 	class FzSet AmmoMedium = AmmoStatus.AddTriangleSet("AmmoMedium", 2, 5, 10);
-	class FzSet AmmoHigh = AmmoStatus.AddRightShoulderSet("AmmoHigh", 10, 14, 18);
+	class FzSet AmmoHigh = AmmoStatus.AddRightShoulderSet("AmmoHigh", 5, 10, 18);
 
 	class Variable& Desirability = fm.CreateFLV("Desirability");
 	class FzSet Undesirable = Desirability.AddLeftShoulderSet("Undesirable", 0, 25, 50);
@@ -43,10 +54,10 @@ double APistol::CalculateDesirability(double Dist)
 	class FzSet VeryDesirable = Desirability.AddRightShoulderSet("Very Desirable", 50, 75, 100);
 
 	fm.AddRule(TargetClose, VeryDesirable);
-	fm.AddRule(TargetMedium, VeryDesirable);
-	fm.AddRule(TargetFar, VeryDesirable);
-	fm.AddRule(AmmoLow, VeryDesirable);
-	fm.AddRule(AmmoMedium, VeryDesirable);
+	fm.AddRule(TargetMedium, Desirable);
+	fm.AddRule(TargetFar, Undesirable);
+	fm.AddRule(AmmoLow, Undesirable);
+	fm.AddRule(AmmoMedium, Desirable);
 	fm.AddRule(AmmoHigh, VeryDesirable);
 
 	// Fuzzify the inputs
@@ -54,6 +65,6 @@ double APistol::CalculateDesirability(double Dist)
 	fm.Fuzzify("Ammo", CalculateAmmo());
 
 	// Return the defuzzified crisp desirability value
-	return fm.Defuzzify("Desirability", FuzzyModule::centroid);
+	return fm.Defuzzify("Desirability", FuzzyModule::max_av);
 
 }

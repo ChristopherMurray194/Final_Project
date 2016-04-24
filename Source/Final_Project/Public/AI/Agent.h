@@ -77,8 +77,8 @@ private:
 	TArray<ABaseWeapon*> Weapons;
 
 	//============Weapons==============//
-	class APistol* SpawnedPistol;
-	class AShotgun* SpawnedShotgun;
+	class ABaseWeapon* SpawnedPistol;
+	class ABaseWeapon* SpawnedShotgun;
 	// SpawnedRifle is in BaseCharacter header
 	//=================================//
 

@@ -3,6 +3,7 @@
 #include "Final_Project.h"
 #include "BaseCharacter.h"
 #include "Rifle.h"
+#include "Shotgun.h"
 #include "BaseWeapon.h"
 #include "Engine.h"
 #include "Delegate.h"

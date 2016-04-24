@@ -13,7 +13,7 @@ ABaseWeapon::ABaseWeapon(){}
 
 double ABaseWeapon::CalculateDesirability(double Dist){ return 0.0; }
 
-void ABaseWeapon::SetupWeaponMesh(USkeletalMesh* Mesh, UMaterial* Mat, FVector relLocation, FRotator relRotation)
+void ABaseWeapon::SetupWeaponMesh(USkeletalMesh* Mesh, UMaterial* Mat, FVector relLocation, FRotator relRotation, FVector relScale)
 {
 	GunMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Gun_Mesh"));
 	GunMesh->AttachTo(RootComponent);
@@ -21,15 +21,17 @@ void ABaseWeapon::SetupWeaponMesh(USkeletalMesh* Mesh, UMaterial* Mat, FVector r
 	GunMesh->SetMaterial(0, Mat);
 	GunMesh->SetRelativeLocation(relLocation);
 	GunMesh->SetRelativeRotation(relRotation);
+	GunMesh->SetRelativeScale3D(relScale);
 	GunMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);	// Set non collidable
 }
 
-void ABaseWeapon::SetupArrowComp(FVector relLocation, FRotator relRotation)
+void ABaseWeapon::SetupArrowComp(FVector relLocation, FRotator relRotation, FVector relScale)
 {
 	ArrowComp = CreateDefaultSubobject<UArrowComponent>(TEXT("Weapon_Muzzle"));
 	ArrowComp->AttachTo(GunMesh);
 	ArrowComp->SetRelativeLocation(relLocation);
 	ArrowComp->SetRelativeRotation(relRotation);
+	ArrowComp->SetRelativeScale3D(relScale);
 	ArrowComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 

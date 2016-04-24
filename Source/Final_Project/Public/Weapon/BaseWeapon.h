@@ -14,24 +14,29 @@ public:
 	// Sets default values for this actor's properties
 	ABaseWeapon();
 
+	UPROPERTY(EditAnywhere, Category = GunMesh)
 	class USkeletalMeshComponent* GunMesh;
-	class UArrowComponent* ArrowComp;
+
+	UPROPERTY(EditAnywhere, Category = Arrow)
+		class UArrowComponent* ArrowComp;
 	
 	/*
 	* Setup the skeletal mesh of the weapon 
 	* @param Mesh - Skeletal mesh of the weapon
 	* @param Mat - Material of the weapon (assigned to index 0)
-	* @param relLocation - Sets the location of the arrow component relative to its parent
-	* @param relRotation - Sets the rotation of the arrow component relative to its parent
+	* @param relLocation - Sets the location of the weapon mesh relative to its parent
+	* @param relRotation - Sets the rotation of the weapon mesh relative to its parent
+	* @param relScale - Sets the scale of the weapon mesh relative to its parent
 	*/
-	void SetupWeaponMesh(USkeletalMesh* Mesh, UMaterial* Mat, FVector relLocation, FRotator relRocation);
+	void SetupWeaponMesh(USkeletalMesh* Mesh, UMaterial* Mat, FVector relLocation, FRotator relRocation, FVector relScale = FVector(1.0f, 1.0f, 1.0f));
 
 	/*
 	* Setup the Arrow component for the weapon
 	* @param relLocation - Sets the location of the arrow component relative to its parent
 	* @param relRotation - Sets the rotation of the arrow component relative to its parent
+	* @param relScale - Sets the scale of the arrow component relative to its parent
 	*/
-	void SetupArrowComp(FVector relLocation, FRotator relRotation);
+	void SetupArrowComp(FVector relLocation, FRotator relRotation, FVector relScale = FVector(1.0f, 1.0f, 1.0f));
 
 	/*
 	Create a line trace from the gun.

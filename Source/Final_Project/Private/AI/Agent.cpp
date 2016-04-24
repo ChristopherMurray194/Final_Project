@@ -5,6 +5,7 @@
 #include "AgentController.h"
 #include "Final_ProjectCharacter.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISense_Sight.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "BaseWeapon.h"
 #include "Rifle.h"
@@ -22,12 +23,12 @@ AAgent::AAgent()
 
 	SensingComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Agent_Perception"));
 	SightComp = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight_Configuration"));
-	float SightRadiusWeight = 512.0f;
+	float SightRadiusWeight = 5000.0f;
 	SightComp->SightRadius = SightRadiusWeight;
 	// How far until a sensed pawn is out of range (can no longer be seen).
-	SightComp->LoseSightRadius = 3500.0;
+	SightComp->LoseSightRadius = SightRadiusWeight + 500.0f;
 	// FOV angle
-	SightComp->PeripheralVisionAngleDegrees = 130.0f;
+	SightComp->PeripheralVisionAngleDegrees = 64.0f;
 	SightComp->DetectionByAffiliation.bDetectEnemies = true;
 	SightComp->DetectionByAffiliation.bDetectNeutrals = true;
 	SightComp->DetectionByAffiliation.bDetectFriendlies = true;
@@ -63,6 +64,8 @@ void AAgent::BeginPlay()
 	Weapons.Push(SpawnedRifle);
 	Weapons.Push(SpawnedShotgun);
 	Weapons.Push(SpawnedPistol);
+
+	UAIPerceptionSystem::RegisterPerceptionStimuliSource(this, UAISense_Sight::StaticClass(), this);
 }
 
 void AAgent::Tick(float DeltaSeconds)
@@ -70,7 +73,7 @@ void AAgent::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	
 	SensingComp->RequestStimuliListenerUpdate();
-
+	
 	if (bPlayerSeen)  
 	{
 		// Check our LoS to the player and act accordingly when broken.
@@ -192,7 +195,7 @@ void AAgent::SelectWeapon(float Dist)
 					GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Blue, FString::Printf(TEXT("%f"), CurrentDesirability));
 					GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, FString::Printf(TEXT("%f"), OtherDesirability));
 				}
-				// If the this weapon is more desirable than the currently equipped weapon 
+				// If the this weapon is more desirable than the currently equipped weapon
 				if (OtherDesirability > CurrentDesirability)
 				{
 					// Check for the first iteration of the Weapons array
@@ -203,16 +206,21 @@ void AAgent::SelectWeapon(float Dist)
 						// Set as new weapon to equip
 						NewWeapon = it;
 					}
+					// Otherwise if this weapon's desirability is greater than the previous most desirable weapon
 					else if (OtherDesirability > TempDesirability)
+					{
+						// This is the most desirable weapon
 						TempDesirability = OtherDesirability;
-					// Set this as the new weapon to equip
-					NewWeapon = it;
+						// Set this as the new weapon to equip
+						NewWeapon = it;
+					}// If a previous weapon in the array has a higher desirability score, do nothing
 				}
 			}
 		}
 		// If the current weapon isn't the same as the new weapon then
-		// the weapon needs to be changed
-		if (CurrentWeapon != NewWeapon)
+		// the weapon needs to be changed AND the currently equipped 
+		// weapon's desirability is less than 30
+		if ((CurrentWeapon != NewWeapon) && (CurrentDesirability < 30.0f))
 			// Equip the weapon
 			EquipWeapon(NewWeapon);
 	}
@@ -221,47 +229,61 @@ void AAgent::SelectWeapon(float Dist)
 void AAgent::EquipWeapon(ABaseWeapon* NewWeapon)
 {
 	// Get the currently equipped weapon
-	ABaseWeapon* CurrentWeapon = GetCurrentWeapon();
+	if (GetCurrentWeapon() != NULL)
 		// Destroy that weapon
-		CurrentWeapon->Destroy();
+		GetCurrentWeapon()->Destroy();
 
-	// Here we would spawn in the NewWeapon object and attach it
-	// to the rootcomponent of the character. However I do have a
-	// shotgun or a pistol asset (mesh, skeletal, material etc.) so
-	// to visualize that they are equipped I shall merely display the 
-	// shotgun or pistol animations respectively.
-	if (NewWeapon == SpawnedPistol && ((NewWeapon && SpawnedPistol) != NULL))
+	// Spawn and equip the rifle
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = Instigator;
+	UWorld* World = GetWorld();
+	if (World)
 	{
-		bRifleEquipped = false;
-		bShotgunEquipped = false;
-		bPistolEquipped = true;
-	}
-	else if (NewWeapon == SpawnedShotgun && ((NewWeapon && SpawnedShotgun) != NULL))
-	{
-		bRifleEquipped = false;
-		bShotgunEquipped = true;
-		bPistolEquipped = false;
-	}
-	// However because the Rifle does have a mesh the spawn and attach code will need
-	// to be added specifically for the instance where the rifle is equipped.
-	else
-	{
-		bRifleEquipped = true;
-		bShotgunEquipped = false;
-		bPistolEquipped = false;
-
-		// Spawn and equip the rifle
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = this;
-		SpawnParams.Instigator = Instigator;
-		UWorld* World = GetWorld();
-		if (World)
+		// Here we would spawn in the NewWeapon object and attach it
+		// to the rootcomponent of the character. However I do have a
+		// shotgun or a pistol asset (mesh, skeletal, material etc.) so
+		// to visualize that they are equipped I shall merely display the 
+		// shotgun or pistol animations respectively.
+		if (NewWeapon == SpawnedPistol && ((NewWeapon && SpawnedPistol) != NULL))
 		{
-			NewWeapon = World->SpawnActor<ARifle>(SpawnParams);
-			if (SpawnedRifle != NULL)
+			bRifleEquipped = false;
+			bShotgunEquipped = false;
+			bPistolEquipped = true;
+
+			NewWeapon = World->SpawnActor<APistol>(SpawnParams);
+			if (NewWeapon != NULL)
 			{
-				SpawnedRifle->AttachRootComponentTo(ManMesh, TEXT("GunSocket"), EAttachLocation::SnapToTargetIncludingScale, true);
-				CurrentWeapon = SpawnedRifle;
+				NewWeapon->AttachRootComponentTo(ManMesh, TEXT("GunSocket"), EAttachLocation::SnapToTargetIncludingScale, true);
+				SetCurrentWeapon(NewWeapon);
+			}
+		}
+		else if (NewWeapon == SpawnedShotgun && ((NewWeapon && SpawnedShotgun) != NULL))
+		{
+			bRifleEquipped = false;
+			bShotgunEquipped = true;
+			bPistolEquipped = false;
+
+			NewWeapon = World->SpawnActor<AShotgun>(SpawnParams);
+			if (NewWeapon != NULL)
+			{
+				NewWeapon->AttachRootComponentTo(ManMesh, TEXT("GunSocket"), EAttachLocation::SnapToTargetIncludingScale, true);
+				SetCurrentWeapon(NewWeapon);
+			}
+		}
+		// However because the Rifle does have a mesh the spawn and attach code will need
+		// to be added specifically for the instance where the rifle is equipped.
+		else
+		{
+			bRifleEquipped = true;
+			bShotgunEquipped = false;
+			bPistolEquipped = false;
+
+			NewWeapon = World->SpawnActor<ARifle>(SpawnParams);
+			if (NewWeapon != NULL)
+			{
+				NewWeapon->AttachRootComponentTo(ManMesh, TEXT("GunSocket"), EAttachLocation::SnapToTargetIncludingScale, true);
+				SetCurrentWeapon(NewWeapon);
 			}
 		}
 	}

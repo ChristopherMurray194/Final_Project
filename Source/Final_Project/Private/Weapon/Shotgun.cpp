@@ -20,6 +20,17 @@ AShotgun::AShotgun()
 	// Damage values
 	SetPlayerDamage(20.0f);
 	SetEnemyDamage(50.0f);
+
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> GunAsset(TEXT("/Game/FPWeapon/Mesh/SK_FPGun.SK_FPGun"));
+	if (GunAsset.Succeeded())
+	{
+		static ConstructorHelpers::FObjectFinder<UMaterial> MaterialAsset(TEXT("/Game/FPWeapon/Materials/M_FPGun"));
+		if (MaterialAsset.Succeeded())
+		{
+			SetupWeaponMesh(GunAsset.Object, MaterialAsset.Object, FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, -90.0f, 0.0f));
+		}
+		SetupArrowComp(FVector(0.0f, 50.0f, 11.0f), FRotator(0.0f, 90.0f, 0.0f));
+	}
 }
 
 double AShotgun::CalculateDesirability(double Dist)
@@ -42,17 +53,17 @@ double AShotgun::CalculateDesirability(double Dist)
 	class FzSet Desirable = Desirability.AddTriangleSet("Desirable", 25, 50, 75);
 	class FzSet VeryDesirable = Desirability.AddRightShoulderSet("Very Desirable", 50, 75, 100);
 
-	fm.AddRule(TargetClose, Undesirable);
+	fm.AddRule(TargetClose, VeryDesirable);
 	fm.AddRule(TargetMedium, Undesirable);
 	fm.AddRule(TargetFar, Undesirable);
 	fm.AddRule(AmmoLow, Undesirable);
-	fm.AddRule(AmmoMedium, Undesirable);
-	fm.AddRule(AmmoHigh, Undesirable);
+	fm.AddRule(AmmoMedium, Desirable);
+	fm.AddRule(AmmoHigh, VeryDesirable);
 
 	// Fuzzify the inputs
 	fm.Fuzzify("Distance", Dist);
 	fm.Fuzzify("Ammo", CalculateAmmo());
 
 	// Return the defuzzified crisp desirability value
-	return fm.Defuzzify("Desirability", FuzzyModule::centroid);
+	return fm.Defuzzify("Desirability", FuzzyModule::max_av);
 }

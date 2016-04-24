@@ -4,6 +4,8 @@
 #include "AgentController.h"
 #include "Agent.h"
 #include "PathNode.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISense_Sight.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Engine.h"
@@ -56,6 +58,7 @@ void AAgentController::Possess(class APawn* InPawn)
 		}
 
 		BehvaiourTreeComp->StartTree(*(Agent->AgentBehaviourTree));
+		
 	}/* // Must be commented out when Launching. GetActorLabel function only avaialable in development builds
 	else // Handle errors
 	{

@@ -91,7 +91,7 @@ public:
 
 	// Spawned rifle
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapons, meta = (AllowPrivateAccess = "true"))
-	class ARifle* SpawnedRifle;
+	class ABaseWeapon* SpawnedRifle;
 
 	// Current Weapon equipped for the character
 	class ABaseWeapon* CurrentWeapon;
