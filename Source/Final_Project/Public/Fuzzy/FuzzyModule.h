@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+//  Author: Mat Buckland (www.ai-junkie.com)
+
 #pragma once
 
 #include <iostream>

@@ -18,7 +18,7 @@ APistol::APistol()
 	// Range of rifle
 	SetRange(1000.0f);
 	// Damage values
-	SetPlayerDamage(0.5f);
+	SetPlayerDamage(0.2f);
 	SetEnemyDamage(10.0f);
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> GunAsset(TEXT("/Game/FPWeapon/Mesh/SK_FPGun.SK_FPGun"));
@@ -60,7 +60,7 @@ double APistol::CalculateDesirability(double Dist)
 	class FzSet Desirable = Desirability.AddTriangleSet("Desirable", 25, 50, 75);
 	class FzSet VeryDesirable = Desirability.AddRightShoulderSet("Very Desirable", 50, 75, 100);
 
-	fm.AddRule(TargetClose, VeryDesirable);
+	fm.AddRule(TargetClose, Desirable);
 	fm.AddRule(TargetMedium, Desirable);
 	fm.AddRule(TargetFar, Undesirable);
 	fm.AddRule(AmmoLow, Undesirable);

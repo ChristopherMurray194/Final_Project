@@ -22,13 +22,8 @@ AAgent::AAgent()
 	Tags.Add(TEXT("Enemy"));
 
 	SensingComp = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Agent_Perception"));
-	SightComp = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight_Configuration"));
-	float SightRadiusWeight = 5000.0f;
-	SightComp->SightRadius = SightRadiusWeight;
-	// How far until a sensed pawn is out of range (can no longer be seen).
-	SightComp->LoseSightRadius = SightRadiusWeight + 500.0f;
-	// FOV angle
-	SightComp->PeripheralVisionAngleDegrees = 64.0f;
+	SightComp = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight_Configuration"));	
+
 	SightComp->DetectionByAffiliation.bDetectEnemies = true;
 	SightComp->DetectionByAffiliation.bDetectNeutrals = true;
 	SightComp->DetectionByAffiliation.bDetectFriendlies = true;
@@ -43,7 +38,14 @@ void AAgent::PostInitializeComponents()
 	
 	// Set the Agent colour
 	GetNewMesh()->CreateAndSetMaterialInstanceDynamic(0)->SetVectorParameterValue(TEXT("BodyColor"), EnemyColor);
-	
+
+	float SightRadiusWeight = 1000.0f;
+	SightComp->SightRadius = SightRadiusWeight;
+	// How far until a sensed pawn is out of range (can no longer be seen).
+	SightComp->LoseSightRadius = SightRadiusWeight + 15.0f;
+	// FOV angle
+	SightComp->PeripheralVisionAngleDegrees = 90.0f;
+
 }
 
 void AAgent::BeginPlay()
@@ -116,10 +118,6 @@ void AAgent::SensePawn(TArray<AActor*> OtherPawn)
 			}
 		}
 	}
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Red, FString::Printf(TEXT("%s"), bPistolEquipped ? TEXT("true") : TEXT("false")));
-	}
 }
 
 void AAgent::CheckLoS()
@@ -140,7 +138,7 @@ void AAgent::CheckLoS()
 		UWorld* World = GetWorld();
 
 		World->LineTraceSingleByChannel(Hit, AgentLocation + Direction, Controller->GetFocalPoint(), ECollisionChannel::ECC_Visibility, TraceParams, FCollisionResponseParams::DefaultResponseParam);
-		DrawDebugLine(World, AgentLocation + Direction, Controller->GetFocalPoint(), FColor::Yellow, false, -1, 0, 2.0f);
+		//DrawDebugLine(World, AgentLocation + Direction, Controller->GetFocalPoint(), FColor::Yellow, false, -1, 0, 2.0f);
 		//==============================================//
 
 		AActor* HitActor = Hit.GetActor();
@@ -189,12 +187,7 @@ void AAgent::SelectWeapon(float Dist)
 			{
 				// Calculate the desirability of this weapon
 				double OtherDesirability = it->CalculateDesirability(Dist);
-				if (GEngine)
-				{
-					GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Yellow, FString::Printf(TEXT("%f"), Dist));
-					GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Blue, FString::Printf(TEXT("%f"), CurrentDesirability));
-					GEngine->AddOnScreenDebugMessage(-1, 0.5f, FColor::Green, FString::Printf(TEXT("%f"), OtherDesirability));
-				}
+
 				// If the this weapon is more desirable than the currently equipped weapon
 				if (OtherDesirability > CurrentDesirability)
 				{

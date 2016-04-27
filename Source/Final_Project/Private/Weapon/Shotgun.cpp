@@ -18,7 +18,7 @@ AShotgun::AShotgun()
 	// Range of rifle
 	SetRange(750.0f);
 	// Damage values
-	SetPlayerDamage(20.0f);
+	SetPlayerDamage(1.0f);
 	SetEnemyDamage(50.0f);
 
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> GunAsset(TEXT("/Game/FPWeapon/Mesh/SK_FPGun.SK_FPGun"));
